@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Josephine's Birthday Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD -->
+        <div id="hud" class="hidden">
+            <div class="hud-left">
+                <div id="hearts"></div>
+                <div class="collectible">🧁 <span id="cupcakeCount">0</span></div>
+                <div class="collectible">🎁 <span id="giftCount">0</span>/3</div>
+            </div>
+            <div class="hud-center">
+                <div id="levelDisplay">Level 1</div>
+            </div>
+            <div class="hud-right">
+                <button id="pauseBtn" class="btn small-btn">⏸ Pause</button>
+            </div>
+        </div>
+
+        <!-- Overlays -->
+        <div id="menuOverlay" class="overlay active">
+            <div class="panel">
+                <h1 class="bounce-text">Josephine's Birthday Adventure</h1>
+                <p>Avoid bombs to get to the birthday cake!</p>
+                <button id="startBtn" class="btn primary">Start Adventure</button>
+                <button id="instructionsBtn" class="btn">Instructions</button>
+                <button id="creditsBtn" class="btn">Credits</button>
+                <button id="homeBtn" class="btn" onclick="window.location.href='../index.html'" style="margin-top: 15px; background: #999;">Back to Home</button>
+            </div>
+        </div>
+
+        <div id="instructionsOverlay" class="overlay hidden">
+            <div class="panel">
+                <h2>How to Play</h2>
+                <div class="instructions-content">
+                    <p><strong>Move:</strong> Left/Right Arrows or A/D</p>
+                    <p><strong>Jump:</strong> Up Arrow or W (Double jump available!)</p>
+                    <p><strong>Shoot:</strong> Space (Destroys ants and bosses, but NOT bombs!)</p>
+                    <p><strong>Crouch:</strong> Down Arrow or S</p>
+                    <p><strong>Mobile:</strong> Use on-screen controls</p>
+                    <p>🧁 Cupcakes give extra score and lives (Optional)</p>
+                    <p>🎁 You MUST find all hidden gifts to pass a level!</p>
+                </div>
+                <button id="backFromInstBtn" class="btn">Back</button>
+            </div>
+        </div>
+        
+        <div id="creditsOverlay" class="overlay hidden">
+            <div class="panel">
+                <h2>Credits</h2>
+                <p>Created with love for Josephine's Birthday! ❤️</p>
+                <p>Programming & Art: Samuel Bekoe</p>
+                <button id="backFromCreditsBtn" class="btn">Back</button>
+            </div>
+        </div>
+
+        <div id="confirmOverlay" class="overlay hidden">
+            <div class="panel">
+                <h2>Go Back?</h2>
+                <p>Do you want to move back to Level 1?</p>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button id="confirmYesBtn" class="btn primary">Yes</button>
+                    <button id="confirmNoBtn" class="btn">No</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pauseOverlay" class="overlay hidden">
+            <div class="panel">
+                <h2>Paused</h2>
+                <button id="resumeBtn" class="btn primary">Resume</button>
+                <button id="restartBtn" class="btn">Restart Level</button>
+                <button id="menuBtn" class="btn">Main Menu</button>
+            </div>
+        </div>
+
+        <div id="gameOverOverlay" class="overlay hidden">
+            <div class="panel">
+                <h2>Game Over!</h2>
+                <p>Don't give up, Josephine!</p>
+                <button id="retryBtn" class="btn primary">Try Again</button>
+                <button id="goMenuBtn" class="btn">Main Menu</button>
+            </div>
+        </div>
+
+        <div id="victoryOverlay" class="overlay hidden">
+            <div class="panel victory-panel">
+                <h1 class="rainbow-text">HAPPY BIRTHDAY JOSEPHINE!</h1>
+                <p class="special-message">May your year be filled with happiness, success, laughter, wonderful memories, and dreams coming true. You deserve all the joy in the world today and always.</p>
+                <div class="stats">
+                    <p>You completed Josephine's Birthday Adventure!</p>
+                    <p>🧁 Cupcakes Collected: <span id="finalCupcakes">0</span></p>
+                    <p>🎁 Gifts Found: <span id="finalGifts">0</span>/3</p>
+                    <p>⏱️ Play Time: <span id="finalTime">00:00</span></p>
+                </div>
+                <button id="replayBtn" class="btn primary">Play Again</button>
+            </div>
+        </div>
+        
+        <!-- Secret Message -->
+        <div id="messageOverlay" class="overlay hidden">
+            <div class="panel message-panel">
+                <h2>A special note...</h2>
+                <p id="messageText"></p>
+                <div id="messagePic" class="hidden">
+                    <img src="" id="secretPic" alt="Secret Memory">
+                    <video id="secretVid" src="" controls style="max-width: 100%; display: none;"></video>
+                </div>
+                <button id="closeMsgBtn" class="btn primary">Continue</button>
+            </div>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div id="mobileControls" class="hidden">
+            <div class="dpad">
+                <button id="btnLeft" class="control-btn">◀</button>
+                <button id="btnRight" class="control-btn">▶</button>
+            </div>
+            <div class="action-buttons">
+                <button id="btnShoot" class="control-btn action-btn">🔥</button>
+                <button id="btnJump" class="control-btn action-btn">⬆</button>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="bgm" loop>
+        <source src="birthday-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="game.js"></script>
+</body>
+</html>

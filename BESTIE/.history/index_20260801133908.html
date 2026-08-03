@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A luxurious, interactive birthday experience for Josephine" />
+    <title>Happy Birthday Josephine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="progress-bar"></div>
+    <canvas id="fireworks"></canvas>
+    <div class="cursor-glow"></div>
+
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loading-card">
+        <div class="sunflower-bloom">🌻</div>
+        <h1>Preparing something special for Josephine...</h1>
+        <p>Opening the brightest birthday surprise with love.</p>
+        <div class="loading-bar"><span></span></div>
+        <div class="countdown-box">
+          <div class="countdown-label">Unlocking in</div>
+          <div id="countdown" class="countdown">--:--:--:--</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="app" class="app hidden">
+      <header class="top-bar">
+        <div class="brand">Josephine’s Birthday</div>
+        <div class="top-actions">
+          <button id="themeToggle" class="icon-btn" aria-label="Toggle theme">☀️</button>
+          <button id="musicToggle" class="icon-btn" aria-label="Toggle music">🎵</button>
+        </div>
+      </header>
+
+      <section class="hero section">
+        <div class="hero-copy">
+          <p class="eyebrow">A digital gift made with love</p>
+          <h1>🎉 Happy Birthday Josephine 🎂</h1>
+          <p class="subtitle">
+            Today we celebrate someone whose kindness, laughter, beautiful heart, and unforgettable presence make the world a brighter place.
+          </p>
+          <button id="surpriseBtn" class="primary-btn">Open Your Birthday Surprise ❤️</button>
+        </div>
+        <div class="hero-art">
+          <div class="cake-card">
+            <div class="cake">
+              <div class="cake-top"></div>
+              <div class="cake-body"></div>
+              <div class="candle"></div>
+              <div class="candle candle-2"></div>
+              <div class="candle candle-3"></div>
+              <div class="flame"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="letter section glass-card">
+        <div class="section-heading">
+          <p class="eyebrow">A little note</p>
+          <h2>Dear Josephine</h2>
+        </div>
+        <div id="letterText" class="letter-text"></div>
+      </section>
+
+      <section class="gallery section">
+        <div class="section-heading">
+          <p class="eyebrow">Memory garden</p>
+          <h2>Golden Moments</h2>
+        </div>
+        <div id="galleryGrid" class="gallery-grid"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Why you shine</p>
+          <h2>Reasons You’re Amazing</h2>
+        </div>
+        <div id="reasonsGrid" class="reasons-grid"></div>
+      </section>
+
+      <section class="section glass-card timer-card">
+        <div class="section-heading">
+          <p class="eyebrow">Friendship timeline</p>
+          <h2>Our Friendship Timer</h2>
+        </div>
+        <div class="timer-controls">
+          <label for="friendshipDate">Set the day we became friends</label>
+          <div class="timer-row">
+            <input id="friendshipDate" type="date" />
+            <button id="saveFriendshipDate" class="small-btn">Save date</button>
+          </div>
+        </div>
+        <div id="friendshipTimer" class="friendship-timer"></div>
+      </section>
+
+      <section class="section gift-section">
+        <div class="section-heading">
+          <p class="eyebrow">A little treasure</p>
+          <h2>Interactive Gift Box</h2>
+        </div>
+        <div id="giftBox" class="gift-box">
+          <div class="gift-top"></div>
+          <div class="gift-body"></div>
+          <div class="gift-ribbon"></div>
+          <div class="gift-lid"></div>
+        </div>
+        <div id="giftLetter" class="gift-letter hidden">
+          <p>Josephine,</p>
+          <p>Thank you for being exactly who you are. May today remind you that you are loved, appreciated, valued, and capable of amazing things.</p>
+          <p>Keep smiling. Keep shining.</p>
+          <p>Happy Birthday. ❤️</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Blooming garden</p>
+          <h2>Sunflower Garden</h2>
+        </div>
+        <div id="sunflowerField" class="sunflower-field"></div>
+      </section>
+
+      <section class="section glass-card">
+        <div class="section-heading">
+          <p class="eyebrow">Kind words</p>
+          <h2>Wishes Wall</h2>
+        </div>
+        <form id="wishForm" class="wish-form">
+          <input id="wishName" type="text" placeholder="Your name" required />
+          <textarea id="wishMessage" rows="3" placeholder="Leave a birthday wish" required></textarea>
+          <button class="small-btn" type="submit">Send a wish</button>
+        </form>
+        <div id="wishList" class="wish-list"></div>
+      </section>
+
+      <section class="section music-card">
+        <div class="section-heading">
+          <p class="eyebrow">Soft soundtrack</p>
+          <h2>Music Corner</h2>
+        </div>
+        <div class="music-player glass-card">
+          <div>
+            <h3>Birthday ambience</h3>
+            <p>Gentle warmth, stars, and celebration.</p>
+          </div>
+          <div class="player-controls">
+            <button id="playPause" class="small-btn">Play</button>
+            <button id="shuffleBtn" class="small-btn">Shuffle</button>
+            <label class="volume">
+              <span>Volume</span>
+              <input id="volumeControl" type="range" min="0" max="1" step="0.05" value="0.5" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Special memories</p>
+          <h2>Timeline</h2>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <h3>First laughter</h3>
+              <p>Every great friendship begins with a smile and one unforgettable conversation.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <h3>Golden memories</h3>
+              <p>Moments collected like petals in a sunflower field—bright, warm, and lasting.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <h3>Today and beyond</h3>
+              <p>Your future is radiant, and this celebration is just the beginning of another beautiful chapter.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section envelope-section">
+        <div class="section-heading">
+          <p class="eyebrow">A final surprise</p>
+          <h2>Open the envelope</h2>
+        </div>
+        <div id="envelope" class="envelope">
+          <div class="seal"></div>
+          <div class="paper">Josephine, thank you for being exactly who you are. May today remind you that you are loved, appreciated, valued, and capable of amazing things. Keep smiling. Keep shining. Happy Birthday. ❤️</div>
+        </div>
+      </section>
+
+      <section class="section finale glass-card">
+        <h2>Josephine,</h2>
+        <p>May your heart always find happiness. May your dreams always find wings. May your future be brighter than the stars above. Thank you for being such an incredible friend. Happy Birthday. May all your wishes come true. ❤️🌻</p>
+      </section>
+    </div>
+
+    <script src="/script.js"></script>
+  </body>
+</html>
