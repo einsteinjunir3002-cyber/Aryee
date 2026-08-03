@@ -358,4 +358,58 @@ p {
     .special-message {
         font-size: 16px;
     }
+    
+    #mobileControls {
+        bottom: 10px;
+    }
+}
+
+/* Orientation Overlay */
+#orientation-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 10, 20, 0.95);
+    z-index: 99999;
+    backdrop-filter: blur(10px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+#orientation-overlay .rotate-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    animation: rotatePhone 2s ease-in-out infinite;
+}
+
+@keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+#orientation-overlay h2 {
+    font-size: 28px;
+    color: #ff477e;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255, 71, 126, 0.5);
+}
+
+#orientation-overlay p {
+    font-size: 16px;
+    color: #ddd;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+@media screen and (orientation: portrait) and (max-width: 768px) {
+    #orientation-overlay {
+        display: flex;
+    }
+    #game-container {
+        display: none; /* Hide game so they don't interact with it */
+    }
 }
