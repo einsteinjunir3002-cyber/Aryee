@@ -1111,9 +1111,22 @@ function draw() {
     }
 }
 
-function gameLoop() {
-    update();
-    draw();
+let lastTime = 0;
+const fpsInterval = 1000 / 60;
+
+function gameLoop(timestamp) {
+    if (!timestamp) timestamp = performance.now();
+    if (!lastTime) lastTime = timestamp;
+    
+    const elapsed = timestamp - lastTime;
+    
+    if (elapsed > fpsInterval) {
+        // Adjust for any minor offset to keep it smooth
+        lastTime = timestamp - (elapsed % fpsInterval);
+        update();
+        draw();
+    }
+    
     animationFrameId = requestAnimationFrame(gameLoop);
 }
 
