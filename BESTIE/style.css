@@ -426,10 +426,7 @@ p {
 }
 
 @media screen and (orientation: portrait) and (max-width: 768px) {
-    #orientation-overlay {
+    #orientation-overlay:not(.dismissed) {
         display: flex;
-    }
-    #game-container {
-        display: none; /* Hide game so they don't interact with it */
     }
 }

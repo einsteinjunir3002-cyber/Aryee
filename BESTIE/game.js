@@ -594,9 +594,8 @@ class Collectible {
             this.active = false;
             if (this.type === 'cupcake') {
                 score++;
-                if (score > 0 && score % 3 === 0) {
-                    if (player.hp < 5) player.hp++; // Grant an extra life
-                    playSound('collect'); 
+                if (score > 0 && score % 2 === 0) {
+                    player.hp++; // Grant an extra life every 2 cupcakes indefinitely
                 }
                 playSound('collect');
                 spawnParticles(this.x, this.y, '#ffd166');
@@ -1326,6 +1325,10 @@ document.getElementById('goMenuBtn').addEventListener('click', () => {
 });
 
 document.getElementById('replayBtn').addEventListener('click', startGame);
+
+document.getElementById('dismissOrientationBtn').addEventListener('click', () => {
+    document.getElementById('orientation-overlay').classList.add('dismissed');
+});
 
 document.getElementById('closeMsgBtn').addEventListener('click', () => {
     gameState = 'PLAYING';
