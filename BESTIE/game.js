@@ -31,6 +31,37 @@ let score = 0;
 let giftsFound = 0;
 let timeElapsed = 0;
 let startTime = 0;
+
+const giftData = [
+    { img: '1785775315009.jpg', msg: "A true friend is the greatest of all blessings. Have a wonderful birthday! 💖" },
+    { img: '1785775341619.jpg', msg: "Here's to more laughs, more memories, and more adventures! 🥂" },
+    { img: '1785775350389.jpg', msg: "Birthdays are nature's way of telling us to eat more cake! Enjoy every bite! 🎂" },
+    { img: 'IMG-20200918-WA0021.jpg', msg: "Happy Birthday Josephine! Keep smiling and chasing your dreams. ✨" },
+    { img: 'IMG-20200919-WA0009.jpg', msg: "You light up every room you walk into! Wishing you endless happiness. 🌟" },
+    { img: 'IMG-20200919-WA0010.jpg', msg: "The world is so much better because you are in it. Have an amazing day! 🌍" },
+    { img: 'IMG_20200901_043248_547.jpg', msg: "Cheers to another year of being absolutely fabulous, Josephine! 🍷" },
+    { img: 'IMG_20200901_043248_550.jpg', msg: "Your birthday is the perfect time to remind you how much you mean to everyone! 💕" },
+    { img: 'IMG_20260803_183318_715.webp', msg: "Your vibe attracts your tribe! Thanks for being an amazing friend! 👯‍♀️" },
+    { img: 'IMG_20260803_183351_715.webp', msg: "Stay sweet, stay fierce, and most importantly, stay you! 👑" },
+    { img: 'IMG_20260803_183438_693.webp', msg: "Wishing you a day as flawless as your selfies! 📸" },
+    { img: 'IMG_20260803_183551_363.webp', msg: "You deserve all the love, happiness, and joy in the world today! 💐" },
+    { img: 'IMG_20260803_183738_640.webp', msg: "Count your age by friends, not years. Happy birthday to my bestie! 👯‍♀️💖" },
+    { img: 'Screenshot_20260803_183434_TikTok.jpg', msg: "Another 365 days of being awesome! Let's celebrate! 🎉" },
+    { img: 'Snapchat-1068713668.jpg', msg: "May all your wishes come true today and always. Happy Birthday bestie! 🌠" },
+    { img: 'Snapchat-1372113039.jpg', msg: "You're not just a year older, you're a year more incredible! 🦋" },
+    { img: 'Snapchat-1524727519.jpg', msg: "Sending you the biggest birthday hug! Have a blast! 🤗" },
+    { img: 'Snapchat-1754887728.jpg', msg: "Never stop being the amazing person you are. Enjoy your special day! 🌻" },
+    { img: 'Snapchat-971677463.jpg', msg: "Josephine, this adventure was made especially for you. Never forget how amazing you are! 🎮" },
+    { img: '_klaus_michealson_20260803_163522_133.mp4', msg: "Lights, camera, action! You're the star today! 🎬" },
+    { img: '_klaus_michealson_20260803_163528_739.mp4', msg: "Keep shining bright like the star you are! ⭐" }
+];
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 let animationFrameId;
 
 // --- Audio ---
@@ -1149,6 +1180,7 @@ function startGame() {
     currentLevel = 1;
     score = 0;
     giftsFound = 0;
+    shuffleArray(giftData);
     player = null; // Reset player completely so they spawn with 3 hearts
     startTime = Date.now();
     loadLevel(currentLevel);
@@ -1186,30 +1218,6 @@ function showMessage(msg) {
 }
 
 function showSecretMessage() {
-    const giftData = [
-        { img: '1785775315009.jpg', msg: "A true friend is the greatest of all blessings. Have a wonderful birthday! 🎈" },
-        { img: '1785775341619.jpg', msg: "Here's to more laughs, more memories, and more adventures! 🚀" },
-        { img: '1785775350389.jpg', msg: "Birthdays are nature's way of telling us to eat more cake! Enjoy every bite! 🍰" },
-        { img: 'IMG-20200918-WA0021.jpg', msg: "Happy Birthday Josephine! Keep smiling and chasing your dreams. ✨" },
-        { img: 'IMG-20200919-WA0009.jpg', msg: "You light up every room you walk into! Wishing you endless happiness. 💖" },
-        { img: 'IMG-20200919-WA0010.jpg', msg: "The world is so much better because you are in it. Have an amazing day! 🎉" },
-        { img: 'IMG_20200901_043248_547.jpg', msg: "Cheers to another year of being absolutely fabulous, Josephine! 🥂" },
-        { img: 'IMG_20200901_043248_550.jpg', msg: "Your birthday is the perfect time to remind you how much you mean to everyone! 🌸" },
-        { img: 'IMG_20260803_183318_715.webp', msg: "Your vibe attracts your tribe! Thanks for being an amazing friend! 🌈" },
-        { img: 'IMG_20260803_183351_715.webp', msg: "Stay sweet, stay fierce, and most importantly, stay you! 💅" },
-        { img: 'IMG_20260803_183438_693.webp', msg: "Wishing you a day as flawless as your selfies! 📸" },
-        { img: 'IMG_20260803_183551_363.webp', msg: "You deserve all the love, happiness, and joy in the world today! 💝" },
-        { img: 'IMG_20260803_183738_640.webp', msg: "Count your age by friends, not years. Happy birthday to my bestie! 👯‍♀️" },
-        { img: 'Screenshot_20260803_183434_TikTok.jpg', msg: "Another 365 days of being awesome! Let's celebrate! 🎊" },
-        { img: 'Snapchat-1068713668.jpg', msg: "May all your wishes come true today and always. Happy Birthday bestie! 🎂" },
-        { img: 'Snapchat-1372113039.jpg', msg: "You're not just a year older, you're a year more incredible! 🌟" },
-        { img: 'Snapchat-1524727519.jpg', msg: "Sending you the biggest birthday hug! Have a blast! 🤗" },
-        { img: 'Snapchat-1754887728.jpg', msg: "Never stop being the amazing person you are. Enjoy your special day! 🎁" },
-        { img: 'Snapchat-971677463.jpg', msg: "Josephine, this adventure was made especially for you. Never forget how amazing you are! 🥰" },
-        { img: '_klaus_michealson_20260803_163522_133.mp4', msg: "Lights, camera, action! You're the star today! 🎬" },
-        { img: '_klaus_michealson_20260803_163528_739.mp4', msg: "Keep shining bright like the star you are! 🌟" }
-    ];
-    
     // Cycle through gifts based on how many have been found globally
     const idx = (giftsFound - 1) % giftData.length;
     const currentGift = giftData[idx];
@@ -1241,7 +1249,6 @@ function levelComplete() {
     if (currentLevel < levels.length) {
         currentLevel++;
         score = 0; // Reset score for new level
-        giftsFound = 0; // Reset gifts for new level
         loadLevel(currentLevel);
         showLevelBanner(`Level ${currentLevel}`);
     } else {
@@ -1253,7 +1260,6 @@ function goBackLevel() {
     if (currentLevel > 1) {
         currentLevel--;
         score = 0;
-        giftsFound = 0;
         loadLevel(currentLevel);
         showLevelBanner(`Back to Level ${currentLevel}`);
     }
