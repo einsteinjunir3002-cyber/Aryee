@@ -122,8 +122,22 @@ canvas {
     text-align: center;
     max-width: 500px;
     width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     transform: translateY(0);
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.panel::-webkit-scrollbar {
+    width: 8px;
+}
+.panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+.panel::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
 }
 
 @keyframes popIn {
@@ -266,11 +280,17 @@ p {
 
 #messagePic img, #messagePic video {
     max-width: 100%;
-    max-height: 300px; /* medium size, prevents overflow */
+    max-height: 300px;
     object-fit: contain;
     border-radius: 10px;
     margin-bottom: 15px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+@media screen and (max-height: 500px) {
+    #messagePic img, #messagePic video {
+        max-height: 40vh; /* Scale down smoothly in landscape */
+    }
 }
 
 /* ================= MOBILE CONTROLS ================= */
