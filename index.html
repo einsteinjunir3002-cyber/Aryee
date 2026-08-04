@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday Josephine!</title>
+    <script>
+        sessionStorage.setItem('countdownViewed', 'true');
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600&display=swap');
 
@@ -344,7 +347,16 @@
             const diff = targetDate - now;
             
             if (diff <= 0) {
-                document.getElementById('timerOverlay').style.display = 'none';
+                document.getElementById('days').innerText = '00';
+                document.getElementById('hours').innerText = '00';
+                document.getElementById('minutes').innerText = '00';
+                document.getElementById('seconds').innerText = '00';
+                
+                document.querySelector('.countdown-container h2').innerText = "It's time! Happy Birthday!";
+                
+                const btnContainer = document.querySelector('.countdown-container > div:last-child');
+                btnContainer.innerHTML = '<button onclick="const overlay = document.getElementById(\\\'timerOverlay\\\'); overlay.style.opacity = \\\'0\\\'; overlay.style.pointerEvents = \\\'none\\\'; setTimeout(() => overlay.style.display = \\\'none\\\', 500);" style="padding: 15px 35px; background: #ff477e; color: white; border: 2px solid white; border-radius: 30px; font-size: 1.3rem; font-family: \\\'Poppins\\\', sans-serif; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: pulse 2s infinite;">🎁 Open Your Surprises!</button>';
+                
                 return;
             }
             
