@@ -47,6 +47,22 @@
     box-sizing: border-box;
 }
 
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--dark-void);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--neon-pink);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--neon-magenta);
+}
+
 html {
     scroll-behavior: smooth;
     height: 100%;
