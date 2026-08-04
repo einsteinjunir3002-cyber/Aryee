@@ -7,6 +7,23 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600&display=swap');
 
+        /* Custom Sleek Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff477e;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff2a6d;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -83,6 +100,10 @@
                 grid-template-columns: 1fr;
             }
             h1 { font-size: 2.2rem; }
+            .container {
+                max-height: 90vh;
+                overflow-y: auto;
+            }
         }
 
         .card {
