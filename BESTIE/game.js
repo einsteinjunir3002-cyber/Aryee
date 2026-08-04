@@ -1231,14 +1231,14 @@ function showSecretMessage() {
         imgEl.style.display = 'none';
         imgEl.src = '';
         vidEl.style.display = 'block';
-        vidEl.src = 'Pics/' + currentGift.img;
+        vidEl.src = '../Pics/' + currentGift.img;
         vidEl.play().catch(e => {});
     } else {
-        vidEl.style.display = 'none';
         vidEl.pause();
+        vidEl.style.display = 'none';
         vidEl.src = '';
         imgEl.style.display = 'block';
-        imgEl.src = 'Pics/' + currentGift.img;
+        imgEl.src = '../Pics/' + currentGift.img;
     }
     
     showMessage(currentGift.msg);
