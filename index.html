@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday Josephine!</title>
-    <script>
-        sessionStorage.setItem('countdownViewed', 'true');
-    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600&display=swap');
 
@@ -159,149 +157,10 @@
             color: #777;
         }
 
-        #timerOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Poppins', sans-serif;
-            transition: opacity 0.5s, visibility 0.5s;
-        }
-        
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
 
-        .countdown-container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            padding: 50px 70px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        .countdown-container h2 {
-            font-family: 'Fredoka One', cursive;
-            color: #fff;
-            font-size: 2.5rem;
-            margin-top: 0;
-            margin-bottom: 30px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            letter-spacing: 1px;
-        }
-
-        .time-blocks {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-        }
-
-        .time-block {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 20px;
-            min-width: 90px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-
-        .time-value {
-            font-size: 4.5rem;
-            font-weight: 600;
-            color: #fff;
-            line-height: 1;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .time-label {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .sunflower-btn {
-            margin-top: 40px;
-            font-size: 4rem;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: inline-block;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
-            animation: pulse 2s infinite;
-        }
-
-        .sunflower-btn:hover {
-            transform: scale(1.2) rotate(15deg);
-            filter: drop-shadow(0 15px 25px rgba(255,215,0,0.6));
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        @media (max-width: 768px) {
-            .countdown-container { padding: 30px 20px; width: 90%; }
-            .time-blocks { gap: 10px; flex-wrap: wrap; }
-            .time-block { min-width: 70px; padding: 15px; }
-            .time-value { font-size: 3rem; }
-            .countdown-container h2 { font-size: 1.8rem; }
-        }
     </style>
 </head>
 <body>
-    <!-- Countdown Timer Overlay -->
-    <div id="timerOverlay">
-        <div class="countdown-container">
-            <h2>Counting down to the big day...</h2>
-            <div class="time-blocks">
-                <div class="time-block">
-                    <span class="time-value" id="days">00</span>
-                    <span class="time-label">Days</span>
-                </div>
-                <div class="time-block">
-                    <span class="time-value" id="hours">00</span>
-                    <span class="time-label">Hours</span>
-                </div>
-                <div class="time-block">
-                    <span class="time-value" id="minutes">00</span>
-                    <span class="time-label">Minutes</span>
-                </div>
-                <div class="time-block">
-                    <span class="time-value" id="seconds">00</span>
-                    <span class="time-label">Seconds</span>
-                </div>
-            </div>
-            
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 25px;">
-                <div class="sunflower-btn" onclick="checkPassword()" title="Secret Bypass" style="margin-top: 0;">🌻</div>
-                
-                <button onclick="downloadICS()" style="margin-top: 0; padding: 12px 25px; background: rgba(255, 255, 255, 0.2); color: white; border: 2px solid white; border-radius: 30px; font-size: 1.1rem; font-family: 'Poppins', sans-serif; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.3s; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2);" onmouseover="this.style.background='white'; this.style.color='#e73c7e';" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'; this.style.color='white';">
-                    ⏰ Remind Me (11:45 PM)
-                </button>
-            </div>
-        </div>
-    </div>
 
     <div class="bubbles" id="bubbles"></div>
 
@@ -337,79 +196,6 @@
             bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
             bubble.style.animationDelay = `${Math.random() * 5}s`;
             bubblesContainer.appendChild(bubble);
-        }
-
-        // Timer Logic
-        const targetDate = new Date('August 5, 2026 00:00:00').getTime();
-        
-        function updateTimer() {
-            const now = new Date().getTime();
-            const diff = targetDate - now;
-            
-            if (diff <= 0) {
-                document.getElementById('days').innerText = '00';
-                document.getElementById('hours').innerText = '00';
-                document.getElementById('minutes').innerText = '00';
-                document.getElementById('seconds').innerText = '00';
-                
-                document.querySelector('.countdown-container h2').innerText = "It's time! Happy Birthday!";
-                
-                const btnContainer = document.querySelector('.countdown-container > div:last-child');
-                btnContainer.innerHTML = '<button onclick="const overlay = document.getElementById(\\\'timerOverlay\\\'); overlay.style.opacity = \\\'0\\\'; overlay.style.pointerEvents = \\\'none\\\'; setTimeout(() => overlay.style.display = \\\'none\\\', 500);" style="padding: 15px 35px; background: #ff477e; color: white; border: 2px solid white; border-radius: 30px; font-size: 1.3rem; font-family: \\\'Poppins\\\', sans-serif; cursor: pointer; transition: all 0.3s; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: pulse 2s infinite;">🎁 Open Your Surprises!</button>';
-                
-                return;
-            }
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            document.getElementById('days').innerText = days.toString().padStart(2, '0');
-            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
-        }
-        
-        setInterval(updateTimer, 1000);
-        updateTimer();
-        
-        function checkPassword() {
-            const pass = prompt("Enter secret password:");
-            if (pass === "1234") {
-                document.getElementById('timerOverlay').style.display = 'none';
-            } else if (pass !== null) {
-                alert("Incorrect password!");
-            }
-        }
-
-        function downloadICS() {
-            const icsContent = 
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//SamsGift//Reminder//EN
-BEGIN:VEVENT
-UID:sams-gift-reminder
-DTSTAMP:20260804T000000Z
-DTSTART:20260804T234500
-DTEND:20260805T000000
-SUMMARY:OPEN SAM'S GIFT AT 12AM
-DESCRIPTION:It's almost midnight! Time to open Sam's gift!
-BEGIN:VALARM
-TRIGGER:-PT0M
-ACTION:DISPLAY
-DESCRIPTION:Reminder
-END:VALARM
-END:VEVENT
-END:VCALENDAR`;
-
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', 'sams_gift_reminder.ics');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
     </script>
     <script src="scroll.js"></script>
