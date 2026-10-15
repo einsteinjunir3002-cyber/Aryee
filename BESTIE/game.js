@@ -1,4 +1,4 @@
-// Josephine's Birthday Adventure - Main Game Script
+// Janet's Birthday Adventure - Main Game Script
 
 // --- Canvas Setup ---
 const canvas = document.getElementById('gameCanvas');
@@ -33,27 +33,27 @@ let timeElapsed = 0;
 let startTime = 0;
 
 const giftData = [
-    { img: '1785775315009.jpg', msg: "A true friend is the greatest of all blessings. Have a wonderful birthday! 💖" },
-    { img: '1785775341619.jpg', msg: "Here's to more laughs, more memories, and more adventures! 🥂" },
-    { img: '1785775350389.jpg', msg: "Birthdays are nature's way of telling us to eat more cake! Enjoy every bite! 🎂" },
-    { img: 'IMG-20200918-WA0021.jpg', msg: "Happy Birthday Josephine! Keep smiling and chasing your dreams. ✨" },
-    { img: 'IMG-20200919-WA0009.jpg', msg: "You light up every room you walk into! Wishing you endless happiness. 🌟" },
-    { img: 'IMG-20200919-WA0010.jpg', msg: "The world is so much better because you are in it. Have an amazing day! 🌍" },
-    { img: 'IMG_20200901_043248_547.jpg', msg: "Cheers to another year of being absolutely fabulous, Josephine! 🍷" },
-    { img: 'IMG_20200901_043248_550.jpg', msg: "Your birthday is the perfect time to remind you how much you mean to everyone! 💕" },
-    { img: 'IMG_20260803_183318_715.webp', msg: "Your vibe attracts your tribe! Thanks for being an amazing friend! 👯‍♀️" },
-    { img: 'IMG_20260803_183351_715.webp', msg: "Stay sweet, stay fierce, and most importantly, stay you! 👑" },
-    { img: 'IMG_20260803_183438_693.webp', msg: "Wishing you a day as flawless as your selfies! 📸" },
-    { img: 'IMG_20260803_183551_363.webp', msg: "You deserve all the love, happiness, and joy in the world today! 💐" },
-    { img: 'IMG_20260803_183738_640.webp', msg: "Count your age by friends, not years. Happy birthday to my bestie! 👯‍♀️💖" },
-    { img: 'Screenshot_20260803_183434_TikTok.jpg', msg: "Another 365 days of being awesome! Let's celebrate! 🎉" },
-    { img: 'Snapchat-1068713668.jpg', msg: "May all your wishes come true today and always. Happy Birthday bestie! 🌠" },
-    { img: 'Snapchat-1372113039.jpg', msg: "You're not just a year older, you're a year more incredible! 🦋" },
-    { img: 'Snapchat-1524727519.jpg', msg: "Sending you the biggest birthday hug! Have a blast! 🤗" },
-    { img: 'Snapchat-1754887728.jpg', msg: "Never stop being the amazing person you are. Enjoy your special day! 🌻" },
-    { img: 'Snapchat-971677463.jpg', msg: "Josephine, this adventure was made especially for you. Never forget how amazing you are! 🎮" },
-    { img: '_klaus_michealson_20260803_163522_133.mp4', msg: "Lights, camera, action! You're the star today! 🎬" },
-    { img: '_klaus_michealson_20260803_163528_739.mp4', msg: "Keep shining bright like the star you are! ⭐" }
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "A true friend is the greatest of all blessings. Have a wonderful birthday! 💖" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Here's to more laughs, more memories, and more adventures, Janet! 🥂" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Birthdays are nature's way of telling us to celebrate and eat more cake! Enjoy every bite! 🎂" },
+    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "Happy Birthday Janet! Keep smiling and chasing your dreams. ✨" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "You light up every room you walk into! Wishing you endless happiness. 🌟" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "The world is so much better because you are in it. Have an amazing day! 🌍" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Cheers to another year of being absolutely fabulous, Janet! 🍷" },
+    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "Your birthday is the perfect time to remind you how much you mean to everyone! 💕" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Your vibe attracts your tribe! Thanks for being an amazing friend! 🌸" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Stay sweet, stay fierce, and most importantly, stay you! 👑" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Wishing you a day as radiant and lovely as you are! 📸" },
+    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "You deserve all the love, happiness, and joy in the world today! 💐" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Count your age by friends, not years. Happy birthday to an awesome friend! 💖" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Another 365 days of being awesome! Let's celebrate! 🎉" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "May all your wishes come true today and always. Happy Birthday Janet! 🌠" },
+    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "You're not just a year older, you're a year more incredible! 🦋" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Sending you the biggest birthday wishes! Have a blast! 🤗" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Never stop being the amazing person you are. Enjoy your special day! 🌻" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Janet, this adventure was made especially for you. Never forget how amazing you are! 🎮" },
+    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "Lights, camera, action! You're the star today! 🎬" },
+    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Keep shining bright like the star you are! ⭐" }
 ];
 
 function shuffleArray(array) {
@@ -1109,8 +1109,7 @@ function draw() {
 
                     ctx.fillStyle = 'black';
                     ctx.font = '14px sans-serif';
-                    ctx.fillText('Happy birthday Josephine', samuelX - 210, samuelY - 95);
-                    ctx.fillText('Aryee Offeibea! 🎉', samuelX - 210, samuelY - 75);
+                    ctx.fillText('Happy Birthday Janet! 🎉', samuelX - 210, samuelY - 80);
                     ctx.fillText('Wishing you the best day!', samuelX - 210, samuelY - 55);
                     ctx.fillText('Congrats on reaching', samuelX - 210, samuelY - 35);
                     ctx.fillText('the cake!', samuelX - 210, samuelY - 15);

@@ -256,6 +256,19 @@ function setupScrollAnimations() {
 function setupGallery() {
     loadImages();
     setupImageModal();
+    setupTimelineSnapshotModals();
+}
+
+function setupTimelineSnapshotModals() {
+    document.querySelectorAll('.timeline-card-2035.memory-snapshot').forEach((card) => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+            const mediaPath = card.getAttribute('data-image');
+            if (mediaPath) {
+                openImageModal(mediaPath, 0);
+            }
+        });
+    });
 }
 
 function loadImages() {
@@ -275,15 +288,14 @@ function loadImages() {
 function createImageCards() {
     const galleryContainer = document.getElementById('galleryContainer');
     const imagePaths = [
-        'Pics/1785775315009.jpg', 'Pics/1785775341619.jpg', 'Pics/1785775350389.jpg', 
-        'Pics/IMG-20200918-WA0021.jpg', 'Pics/IMG-20200919-WA0009.jpg', 'Pics/IMG-20200919-WA0010.jpg', 
-        'Pics/IMG_20200901_043248_547.jpg', 'Pics/IMG_20200901_043248_550.jpg', 
-        'Pics/IMG_20260803_183318_715.webp', 'Pics/IMG_20260803_183351_715.webp', 
-        'Pics/IMG_20260803_183438_693.webp', 'Pics/IMG_20260803_183551_363.webp', 'Pics/IMG_20260803_183738_640.webp', 
-        'Pics/Screenshot_20260803_183434_TikTok.jpg', 
-        'Pics/Snapchat-1068713668.jpg', 'Pics/Snapchat-1372113039.jpg', 'Pics/Snapchat-1524727519.jpg', 
-        'Pics/Snapchat-1754887728.jpg', 'Pics/Snapchat-971677463.jpg', 
-        'Pics/_klaus_michealson_20260803_163522_133.mp4', 'Pics/_klaus_michealson_20260803_163528_739.mp4'
+        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4',
+        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4',
+        'Pics/WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4',
+        'Pics/WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4',
+        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4',
+        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4',
+        'Pics/WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4',
+        'Pics/WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4'
     ];
     
     // Shuffle array so they don't repeat in the same order
@@ -325,9 +337,14 @@ function createImageCard(container, imagePath, index) {
     if (imagePath.endsWith('.mp4')) {
         mediaEl = document.createElement('video');
         mediaEl.src = imagePath;
-        mediaEl.muted = true; // mute so it can autoplay/preview
-        mediaEl.addEventListener('mouseenter', () => mediaEl.play().catch(e => {}));
-        mediaEl.addEventListener('mouseleave', () => mediaEl.pause());
+        mediaEl.muted = true;
+        mediaEl.autoplay = true;
+        mediaEl.loop = true;
+        mediaEl.playsInline = true;
+        mediaEl.style.width = '100%';
+        mediaEl.style.height = '100%';
+        mediaEl.style.objectFit = 'contain';
+        mediaEl.style.background = 'rgba(10, 8, 16, 0.6)';
     } else {
         mediaEl = document.createElement('img');
         mediaEl.src = imagePath;
@@ -815,6 +832,6 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ========== CONSOLE EASTER EGG ==========
-console.log('%c🎉 Happy Birthday Venessa! 🎉', 'color: #ff1493; font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #00d4ff;');
+console.log('%c🎉 Happy Birthday Janet! 🎉', 'color: #ff1493; font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #00d4ff;');
 console.log('%cThank you for being amazing! ❤️', 'color: #9d4edd; font-size: 16px; font-weight: bold;');
 console.log('%cThis website was created with love and CSS magic ✨', 'color: #00d4ff; font-size: 14px; font-style: italic;');

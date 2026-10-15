@@ -26,7 +26,7 @@ const unlockDate = new Date('2026-08-05T00:00:00');
 const reasonWords = ['Kind 🥺', 'Beautiful 🌸', 'Caring 🫂', 'Brilliant 🧠', 'Hilarious 😂', 'Loyal 🐕', 'Supportive 🤝', 'Fierce 🦁', 'Ambitious 🚀', 'Inspiring ✨'];
 const reasonDescriptions = ['Your kindness makes every room warmer, seriously.', 'You carry beauty in everything you do, inside and out.', 'Your care is a gift to everyone lucky enough to know you.', 'Your mind is brilliant and endlessly fascinating.', 'Your laughter is my favorite soundtrack.', 'Your loyalty is rare, priceless, and deeply appreciated.', 'You lift people up with your steady, unwavering support.', 'You shine with a quiet, undeniable strength.', 'Your ambition and drive inspire us all.', 'You literally make the world feel brighter.'];
 const messages = [
-  'Josephine, your heart is a light that never goes out.',
+  'Janet, your smile brings joy to everyone around you.',
   'Your courage and grace make every day better.',
   'You are loved more than you know, and you deserve every beautiful thing.',
   'Your smile has the power to turn sadness into sunshine.',
@@ -116,7 +116,7 @@ function prepareLightbox() {
 }
 
 function beginTyping() {
-  const message = `Dear Josephine, 💖\n\nHappy Birthday! 🎂🥳\n\nToday is all about celebrating someone truly wonderful—YOU. ✨\nYou have a beautiful heart, a kind soul, and a smile that can instantly brighten anyone's day. ☀️\n\nThank you for every late-night conversation 🌙, every uncontrollable laugh 😂, every golden memory 📸, and for simply being the amazing, authentic person you are.\n\nI hope this new chapter of your life brings you endless happiness, radiant health, massive success, and exciting adventures. 🚀\n\nMay every dream in your heart blossom into reality. 🌻\n\nNever stop believing in yourself.\nNever stop shining your light. 🌟\n\nAlways remember that you are appreciated and loved far more than words can ever express. 🥰\n\nI hope today reminds you just how spectacularly special you truly are.\n\nHappy Birthday once again, Bestie! 🎉\n\nMay this be your happiest, most unforgettable year yet.\n\nWith all my love, ❤️`;
+  const message = `Dear Janet, ✨\n\nHappy Birthday! 🎂🥳\n\nToday is all about celebrating someone truly wonderful—YOU. 🌟\nYou bring such great energy, kindness, and positivity wherever you go. ☀️\n\nThank you for being such an awesome friend, for the laughs 😂, and for always being genuine and inspiring.\n\nI hope this new chapter of your life brings you endless happiness, good health, massive success, and exciting adventures. 🚀\n\nMay every dream and aspiration in your heart blossom into reality. 🌻\n\nNever stop believing in yourself.\nNever stop shining your light. 🌟\n\nI hope today reminds you just how truly appreciated and special you are.\n\nHappy Birthday once again, Janet! 🎉\n\nMay this be your happiest and most unforgettable year yet!\n\nWarmest wishes, ✨`;
   let index = 0;
   const timer = setInterval(() => {
     letterText.textContent += message[index] || '';
@@ -126,7 +126,12 @@ function beginTyping() {
 }
 
 async function loadGallery() {
-  const staticImages = ["./Pics/IMG-20200918-WA0021.jpg","./Pics/IMG-20200919-WA0009.jpg","./Pics/IMG-20200919-WA0010.jpg","./Pics/IMG_20200901_043248_547.jpg","./Pics/IMG_20200901_043248_550.jpg","./Pics/Snapchat-1068713668.jpg","./Pics/Snapchat-1372113039.jpg","./Pics/Snapchat-1524727519.jpg","./Pics/Snapchat-1754887728.jpg","./Pics/Snapchat-971677463.jpg"];
+  const staticImages = [
+    "./Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4",
+    "./Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4",
+    "./Pics/WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4",
+    "./Pics/WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4"
+  ];
   images = shuffle(staticImages);
   galleryGrid.innerHTML = '';
   images.forEach((image, index) => {
