@@ -1,4 +1,4 @@
-// Janet's Birthday Adventure - Main Game Script
+// Elizabeth's Birthday Adventure - Main Game Script
 
 // --- Canvas Setup ---
 const canvas = document.getElementById('gameCanvas');
@@ -33,27 +33,24 @@ let timeElapsed = 0;
 let startTime = 0;
 
 const giftData = [
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "A true friend is the greatest of all blessings. Have a wonderful birthday! 💖" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Here's to more laughs, more memories, and more adventures, Janet! 🥂" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Birthdays are nature's way of telling us to celebrate and eat more cake! Enjoy every bite! 🎂" },
-    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "Happy Birthday Janet! Keep smiling and chasing your dreams. ✨" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "You light up every room you walk into! Wishing you endless happiness. 🌟" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "The world is so much better because you are in it. Have an amazing day! 🌍" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Cheers to another year of being absolutely fabulous, Janet! 🍷" },
-    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "Your birthday is the perfect time to remind you how much you mean to everyone! 💕" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Your vibe attracts your tribe! Thanks for being an amazing friend! 🌸" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Stay sweet, stay fierce, and most importantly, stay you! 👑" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Wishing you a day as radiant and lovely as you are! 📸" },
-    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "You deserve all the love, happiness, and joy in the world today! 💐" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Count your age by friends, not years. Happy birthday to an awesome friend! 💖" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Another 365 days of being awesome! Let's celebrate! 🎉" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "May all your wishes come true today and always. Happy Birthday Janet! 🌠" },
-    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "You're not just a year older, you're a year more incredible! 🦋" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Sending you the biggest birthday wishes! Have a blast! 🤗" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4', msg: "Never stop being the amazing person you are. Enjoy your special day! 🌻" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4', msg: "Janet, this adventure was made especially for you. Never forget how amazing you are! 🎮" },
-    { img: 'WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4', msg: "Lights, camera, action! You're the star today! 🎬" },
-    { img: 'WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4', msg: "Keep shining bright like the star you are! ⭐" }
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "Hold on Elizabeth, did UCC give you a degree or a license to cause cardiac arrests with that red carpet dress? You look dangerously gorgeous! 🔥😍" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg', msg: "That electric blue cocktail is icy, but you're serving 100% tropical heat! That cheeky side-eye through the straw is pure flirtatious trouble! 🍹😘" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg', msg: "4 solid years in UCC ain't easy at all, but look at you walking Cape Coast beach looking like a full-time supermodel! Certified degree baddie! 🌴🎓" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg', msg: "Warning: That toothy smile is a public hazard! It's too bright, too sweet, and entirely too cute! Don't ever stop laughing like that, Lizzy! 😁💖" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg', msg: "Look at me back there playing your personal paparazzi! Honestly, capturing Elizabeth's beauty deserves its own full-time salary! 📸😉" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg', msg: "Nerdy-chic specs + glowing melanin = deadly combination. Are you made of copper and tellurium? Because you are Cu-Te, Elizabeth! 👓✨" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "Are you a 4-year degree from Cape Coast? Because you took my breath away and had my heart working overtime! Happy Birthday, Queen Lizzy! 🎓❤️" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg', msg: "Excuse me Miss Elizabeth, do you have a map? Because I got completely lost in those eyes while you were sipping that ocean drink! 🏖️💋" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg', msg: "UCC tried to stress you with exams for 4 years and you came out glowing like a freshly crowned queen. What an absolute flex! 💅👑" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg', msg: "If smiles were currency, you could buy the entire Central Region! Happy Birthday to the sweetest, funniest friend ever! 🥳💎" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg', msg: "They say behind every successful graduate is... a loyal friend trying to get the camera lighting right for Queen Elizabeth! 😂✨" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg', msg: "How can someone be this smart, this funny, and this dangerously pretty at the same time? Elizabeth, save some perfection for the rest of us! 🥺❤️" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "ABSAG Awards wasn't ready, UCC wasn't ready, and honestly, none of us were ready for those strappy heels and that slit! Top-tier stunning! 🔥💃" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg', msg: "If being cute was an exam at UCC, you wouldn't just get an A+, you'd write the textbook! Enjoy every sip and every birthday treat, Lizzy! 🍰🥂" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg', msg: "From the lecture halls of Cape Coast to ocean breezes! Cheers to completing your degree this year! 4 years in UCC is no joke, superstar! 🎓🚀" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg', msg: "A smile so radiant it makes the sun look like an amateur. Happy Birthday Elizabeth, stay goofy and charming forever! ☀️🥰" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg', msg: "Smart girl aesthetic on 100%! Those glasses aren't just for reading, they're for looking drop-dead gorgeous! 👓😍" },
+    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "Happy Birthday Elizabeth! May this new year bring you fat job offers, soft life, expensive vacations, and lots of reasons to celebrate! 🍾🎉" }
 ];
 
 function shuffleArray(array) {
@@ -1109,10 +1106,10 @@ function draw() {
 
                     ctx.fillStyle = 'black';
                     ctx.font = '14px sans-serif';
-                    ctx.fillText('Happy Birthday Janet! 🎉', samuelX - 210, samuelY - 80);
-                    ctx.fillText('Wishing you the best day!', samuelX - 210, samuelY - 55);
-                    ctx.fillText('Congrats on reaching', samuelX - 210, samuelY - 35);
-                    ctx.fillText('the cake!', samuelX - 210, samuelY - 15);
+                    ctx.fillText('Happy Birthday Elizabeth! 🎉', samuelX - 210, samuelY - 80);
+                    ctx.fillText('Congrats on the UCC degree! 🎓', samuelX - 210, samuelY - 55);
+                    ctx.fillText('Hottest graduate in Ghana! 🔥', samuelX - 210, samuelY - 35);
+                    ctx.fillText('Enjoy your cake, Lizzy! 🎂', samuelX - 210, samuelY - 15);
                 }
             }
             ctx.restore();
@@ -1179,7 +1176,7 @@ function startGame() {
     currentLevel = 1;
     score = 0;
     giftsFound = 0;
-    shuffleArray(giftData);
+    // shuffleArray(giftData); // Disabled so gifts cycle through all 6 pictures before repeating
     player = null; // Reset player completely so they spawn with 3 hearts
     startTime = Date.now();
     loadLevel(currentLevel);
@@ -1237,6 +1234,13 @@ function showSecretMessage() {
         vidEl.style.display = 'none';
         vidEl.src = '';
         imgEl.style.display = 'block';
+        imgEl.onerror = function() {
+            if (!this.triedFallback) {
+                this.triedFallback = true;
+                this.src = 'Pics/' + currentGift.img;
+            }
+        };
+        imgEl.triedFallback = false;
         imgEl.src = '../Pics/' + currentGift.img;
     }
     

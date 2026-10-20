@@ -287,21 +287,23 @@ function loadImages() {
 
 function createImageCards() {
     const galleryContainer = document.getElementById('galleryContainer');
-    const imagePaths = [
-        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4',
-        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4',
-        'Pics/WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4',
-        'Pics/WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4',
-        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM (1).mp4',
-        'Pics/WhatsApp Video 2026-10-15 at 6.14.00 AM.mp4',
-        'Pics/WhatsApp Video 2026-10-15 at 6.58.40 AM.mp4',
-        'Pics/WhatsApp Video 2026-10-15 at 7.00.41 AM.mp4'
+    galleryContainer.innerHTML = '';
+    
+    // Cycle through all 6 distinct pictures in order, then return to the 1st pic and continue
+    // This ensures repeated pictures are never close to each other
+    const distinctImages = [
+        'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg',
+        'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg',
+        'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg',
+        'Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg',
+        'Pics/WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg',
+        'Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg'
     ];
     
-    // Shuffle array so they don't repeat in the same order
-    for (let i = imagePaths.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [imagePaths[i], imagePaths[j]] = [imagePaths[j], imagePaths[i]];
+    const repeatCycles = 3; // 18 cards in total
+    const imagePaths = [];
+    for (let r = 0; r < repeatCycles; r++) {
+        imagePaths.push(...distinctImages);
     }
     
     imagePaths.forEach((path, index) => {
@@ -832,6 +834,6 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ========== CONSOLE EASTER EGG ==========
-console.log('%c🎉 Happy Birthday Janet! 🎉', 'color: #ff1493; font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #00d4ff;');
-console.log('%cThank you for being amazing! ❤️', 'color: #9d4edd; font-size: 16px; font-weight: bold;');
+console.log('%c🎉 Happy Birthday Elizabeth! 🎓✨', 'color: #ff1493; font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #00d4ff;');
+console.log('%cCongratulations on conquering 4 years in UCC! Proud of you, Queen Lizzy! ❤️', 'color: #9d4edd; font-size: 16px; font-weight: bold;');
 console.log('%cThis website was created with love and CSS magic ✨', 'color: #00d4ff; font-size: 14px; font-style: italic;');
