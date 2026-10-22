@@ -17,6 +17,28 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
+// --- Level Textures & Seamless Patterns ---
+const sandImg = new Image();
+sandImg.src = 'beach_sand.jpg';
+let sandPattern = null;
+sandImg.onload = () => {
+    try { sandPattern = ctx.createPattern(sandImg, 'repeat'); } catch (e) {}
+};
+
+const booksImg = new Image();
+booksImg.src = 'ucc_books.jpg';
+let booksPattern = null;
+booksImg.onload = () => {
+    try { booksPattern = ctx.createPattern(booksImg, 'repeat'); } catch (e) {}
+};
+
+const carpetImg = new Image();
+carpetImg.src = 'red_carpet.jpg';
+let carpetPattern = null;
+carpetImg.onload = () => {
+    try { carpetPattern = ctx.createPattern(carpetImg, 'repeat'); } catch (e) {}
+};
+
 // --- Game Constants ---
 const GRAVITY = 0.6;
 const FRICTION = 0.8;
@@ -159,6 +181,41 @@ const giftData = [
     {
         img: 'Snapchat-441229762.jpg.jpeg',
         msg: "Happy Birthday Elizabeth! May this new year bring you fat job offers, soft life, expensive vacations, and lots of reasons to celebrate! 🍾🎉"
+    },
+    // 15. WhatsApp Image 2026-10-22 at 12.42.47 PM.jpeg
+    {
+        img: 'WhatsApp Image 2026-10-22 at 12.42.47 PM.jpeg',
+        msg: "Look at that royal posture and radiant melanin! Elizabeth, you didn't just graduate, you set the standard for elegance across UCC! 👑✨"
+    },
+    // 16. WhatsApp Image 2026-10-22 at 12.42.48 PM (1).jpeg
+    {
+        img: 'WhatsApp Image 2026-10-22 at 12.42.48 PM (1).jpeg',
+        msg: "That smile could light up the entire Cape Coast coastline! Too gorgeous, too charming, and far too sweet! 😍🌴"
+    },
+    // 17. WhatsApp Image 2026-10-22 at 12.42.48 PM.jpeg
+    {
+        img: 'WhatsApp Image 2026-10-22 at 12.42.48 PM.jpeg',
+        msg: "Camera focus couldn't handle this level of beauty! Elizabeth, how do you make every single snapshot look like an album cover? 📸🔥"
+    },
+    // 18. WhatsApp Image 2026-10-22 at 12.42.49 PM (1).jpeg
+    {
+        img: 'WhatsApp Image 2026-10-22 at 12.42.49 PM (1).jpeg',
+        msg: "Certified graduate baddie in full effect! Smart brain, golden heart, and unmatched looks—Elizabeth, you have it all! 🎓💖"
+    },
+    // 19. WhatsApp Image 2026-10-22 at 12.42.49 PM.jpeg
+    {
+        img: 'WhatsApp Image 2026-10-22 at 12.42.49 PM.jpeg',
+        msg: "Effortlessly fine! If being this ridiculously pretty was an exam question, you'd pass with 100% plus extra credit! 🌟💃"
+    },
+    // 20. WhatsApp Image 2026-10-22 at 12.42.50 PM.jpeg
+    {
+        img: 'WhatsApp Image 2026-10-22 at 12.42.50 PM.jpeg',
+        msg: "Pure sunshine in human form! Happy Birthday Queen Lizzy, keep winning, shining, and turning heads wherever you go! ☀️🍾"
+    },
+    // 21. WhatsApp Video 2026-10-22 at 12.42.48 PM.mp4
+    {
+        img: 'WhatsApp Video 2026-10-22 at 12.42.48 PM.mp4',
+        msg: "Special Motion Memory unlocked! Seeing Queen Elizabeth live in action is 1000x sweeter! Happy Birthday, superstar! 🎬🎉💖"
     }
 ];
 
@@ -327,6 +384,9 @@ if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
 const levels = [
     {
         // Level 1: Birthday Meadow - Mario staircase: ground -> step1 -> step2 -> step3 -> step4 -> step5 -> GOAL
+        name: "Birthday Meadow",
+        theme: "meadow",
+        tileType: "grass",
         map: [
             "1111111111111111111111111111111111111111",  // 0  ceiling
             "1000000000000000000000000000000000000001",  // 1
@@ -355,7 +415,9 @@ const levels = [
     },
     {
         // Level 2: Gift Valley
-        // Platforms arranged as a zigzag staircase players must climb
+        name: "Gift Valley",
+        theme: "valley",
+        tileType: "candy",
         map: [
             "1111111111111111111111111111111111111111",  // 0
             "1000000000000000000000000000000000000001",  // 1
@@ -384,7 +446,9 @@ const levels = [
     },
     {
         // Level 3: Goblin Castle (Boss level)
-        // Dramatic castle layout with stepped battlements and the boss at top right
+        name: "Goblin Castle",
+        theme: "castle",
+        tileType: "stone",
         map: [
             "1111111111111111111111111111111111111111",  // 0
             "1000000000000000000000000000000000000001",  // 1
@@ -410,6 +474,99 @@ const levels = [
         targetScore: 0,
         bg: '#483D8B',
         floorColor: '#696969'
+    },
+    {
+        // Level 4: Cape Coast Beach & Coconut Grove
+        name: "Cape Coast Beach",
+        theme: "beach",
+        tileType: "sand",
+        map: [
+            "1111111111111111111111111111111111111111",  // 0  open sky ceiling
+            "1000000000000000000000000000000000000001",  // 1
+            "1000000000000000000000000000000000000001",  // 2
+            "1000000000000000000000000000000000000001",  // 3
+            "1000000000000000000000000000000000400001",  // 4  gift high right
+            "1000000000000000000000000000000011110001",  // 5  high platform
+            "1000000000000000000400000000000000000001",  // 6  gift mid
+            "1000000000000000111110000000000000000001",  // 7  boardwalk
+            "1000000002000000000000000000000200000001",  // 8  cupcakes
+            "1000000111100000000000000000111100000001",  // 9  dune platforms
+            "1000000000000000000000000000000000000001",  // 10
+            "1000000000000000000000000000000000000501",  // 11 beach exit portal
+            "1001111000000000000000000000000000111111",  // 12 pier for portal
+            "10000000000200C00000000200C0000000000001",  // 13 crabs
+            "1000000001111110000001111110000000000001",  // 14 mid dunes
+            "1000000000000000000000000000000000400001",  // 15 gift
+            "1000000000000000000000000000000111110001",  // 16
+            "10P0020000000000200C00000000000000000001",  // 17 player, cupcakes, crab
+            "1111111100000111111111100000111111111111",  // 18 broken shore
+            "1111111166666111111111166666111111111111"   // 19 deep ocean water spikes
+        ],
+        targetScore: 4,
+        bg: '#ffaf7b',
+        floorColor: '#f4d06f'
+    },
+    {
+        // Level 5: UCC Exam Halls & Science Quad
+        name: "UCC Exam Halls",
+        theme: "study",
+        tileType: "books",
+        map: [
+            "1111111111111111111111111111111111111111",  // 0
+            "1000000000000000000000000000000000000001",  // 1
+            "1000000000000000000000000000000000000001",  // 2
+            "1000000000000000000000000000000000000501",  // 3  exit portal
+            "1000000000000000000000000000000000111111",  // 4  high podium
+            "1000000000000000000000000000000000000001",  // 5
+            "1000000000000000000040000000000000000001",  // 6  gift
+            "1000000000000000011111000000000000000001",  // 7  lecture desk
+            "1000000000020000000000000002000000000001",  // 8  cupcakes
+            "1000000011111000000000001111100000000001",  // 9  study desks
+            "1000000000000000000000000000000000000001",  // 10
+            "1001111000000000000000000000000011110001",  // 11
+            "1000000000000000000400000000000000000001",  // 12 gift
+            "1000000000000001111110000000000000000001",  // 13
+            "100000000200A0000000000200A0000000000001",  // 14 alarm clock enemies
+            "1000001111110000000011111100000000000001",  // 15
+            "1000000000000000000000000000000000400001",  // 16 gift
+            "10P0020000000000000000000000000011111001",  // 17 player, cupcake
+            "1111111111000001111111111000001111111111",  // 18 broken floor
+            "1111111111666661111111111666661111111111"   // 19 exam pressure spikes
+        ],
+        targetScore: 5,
+        bg: '#203a43',
+        floorColor: '#8b4513'
+    },
+    {
+        // Level 6: Grand UCC Convocation & Royal Coronation
+        name: "Grand Convocation",
+        theme: "convocation",
+        tileType: "carpet",
+        map: [
+            "1111111111111111111111111111111111111111",  // 0
+            "1000000000000000000000000000000000000001",  // 1
+            "1000000000000000000000000000000000000001",  // 2
+            "1000000000000000000000000000000000000001",  // 3
+            "1000000000000000000000000000000000000001",  // 4
+            "1000000000000000000000000000000000000001",  // 5
+            "1000000000000000000000000000000040000001",  // 6  royal gift
+            "1000000000000000000000000000001111111001",  // 7  balcony
+            "1000000000000000000000000000000000000001",  // 8
+            "1000000000000000000040000000000000000001",  // 9  royal gift
+            "1000000000000000011111100000000000000001",  // 10
+            "1000000002000000000000000000000000000001",  // 11 cupcake
+            "1000000111110000000000000000000000000001",  // 12 red carpet steps
+            "1000000000000000000000000000000000000001",  // 13
+            "1001111000000000000000000000000000000001",  // 14
+            "1000000000000000000000000000000000000001",  // 15
+            "1000000000000000000000000000000000000001",  // 16
+            "10P00200000000000000000000000000B0000001",  // 17 Player at left, Final Boss Titan at right
+            "1111111111111111111111111111111111111111",  // 18 solid Great Hall red carpet floor
+            "1111111111111111111111111111111111111111"   // 19
+        ],
+        targetScore: 0,
+        bg: '#2b0938',
+        floorColor: '#800020'
     }
 ];
 
@@ -691,16 +848,18 @@ class Enemy {
         this.y = y;
         this.w = 32;
         this.h = 32;
-        this.vx = 1.5;
+        this.vx = type === 'alarm' ? 2.6 : (type === 'crab' ? 1.8 : 1.5);
         this.vy = 0;
-        this.type = type;
+        this.type = type; // 'ant', 'crab', 'alarm', 'paper', 'bomb'
         this.active = true;
+        this.timer = Math.random() * 100;
     }
     update() {
         if (!this.active) return;
+        this.timer++;
         
-        if (this.type === 'ant') {
-            // Apply gravity so ants stay on bricks
+        if (this.type === 'ant' || this.type === 'crab' || this.type === 'alarm') {
+            // Apply gravity so ground enemies stay on bricks
             this.vy = (this.vy || 0) + GRAVITY;
             this.y += this.vy;
             
@@ -718,6 +877,14 @@ class Enemy {
             const ahead = this.vx > 0 ? Math.floor((this.x + this.w) / TILE_SIZE) : Math.floor(this.x / TILE_SIZE);
             const belowAhead = Math.floor((this.y + this.h + 2) / TILE_SIZE);
             if (getTile(ahead, Math.floor(this.y / TILE_SIZE)) === 1 || getTile(ahead, belowAhead) === 0) {
+                this.vx *= -1;
+            }
+        } else if (this.type === 'paper') {
+            // Paper gently hovers and floats back and forth
+            this.x += this.vx;
+            this.y += Math.sin(this.timer * 0.08) * 1.5;
+            const ahead = this.vx > 0 ? Math.floor((this.x + this.w) / TILE_SIZE) : Math.floor(this.x / TILE_SIZE);
+            if (getTile(ahead, Math.floor(this.y / TILE_SIZE)) === 1 || this.x < 50 || this.x > (mapWidth - 2) * TILE_SIZE) {
                 this.vx *= -1;
             }
         } else if (this.type === 'bomb') {
@@ -744,9 +911,148 @@ class Enemy {
         ctx.font = '32px sans-serif';
         if (this.type === 'bomb') {
             ctx.fillText('💣', 0, 30); 
+        } else if (this.type === 'ant') {
+            ctx.fillText('🐜', 0, 30);
+        } else if (this.type === 'crab') {
+            // Beach Crab with snapping claws
+            const clawBob = Math.sin(this.timer * 0.2) * 2;
+            ctx.save();
+            ctx.translate(0, clawBob);
+            ctx.fillText('🦀', 0, 30);
+            ctx.restore();
+        } else if (this.type === 'alarm') {
+            // Buzzing Alarm Clock
+            const rattle = Math.sin(this.timer * 0.5) * 2;
+            ctx.save();
+            ctx.translate(rattle, 0);
+            ctx.fillText('⏰', 0, 30);
+            ctx.restore();
+        } else if (this.type === 'paper') {
+            ctx.fillText('📝', 0, 30);
+        } else {
+            ctx.fillText('👹', 0, 30);
         }
-        else if (this.type === 'ant') ctx.fillText('🐜', 0, 30); // Ant
-        else ctx.fillText('👹', 0, 30); // Goblin default
+        ctx.restore();
+    }
+}
+
+class BirdEnemy {
+    constructor(x, y, direction = -1, speed = 3.2, type = 'seagull') {
+        this.x = x;
+        this.y = y;
+        this.baseY = y;
+        this.w = type === 'mortarboard' ? 32 : (type === 'paper' ? 30 : 38);
+        this.h = 28;
+        this.vx = direction * speed;
+        this.vy = 0;
+        this.type = type; // 'seagull', 'paper', 'mortarboard'
+        this.active = true;
+        this.flapTimer = Math.random() * 10;
+        this.bobFreq = 0.04 + Math.random() * 0.02;
+        this.bobAmp = 22 + Math.random() * 12;
+        this.timeAlive = 0;
+        this.rot = 0;
+    }
+
+    update() {
+        if (!this.active) return;
+        this.timeAlive++;
+        this.x += this.vx;
+        this.y = this.baseY + Math.sin(this.timeAlive * this.bobFreq) * this.bobAmp;
+        this.flapTimer += 0.22;
+        this.rot += 0.08;
+
+        // Deactivate when far off level
+        if (this.vx < 0 && this.x < -120) this.active = false;
+        if (this.vx > 0 && this.x > (mapWidth * TILE_SIZE) + 120) this.active = false;
+
+        // Collide with player
+        if (rectIntersect(this, player)) {
+            player.takeDamage(1);
+        }
+    }
+
+    draw(ctx, camX, camY) {
+        if (!this.active) return;
+        ctx.save();
+        ctx.translate(this.x - camX + this.w / 2, this.y - camY + this.h / 2);
+
+        if (this.type === 'mortarboard') {
+            // Spinning graduation cap
+            ctx.rotate(this.rot);
+            ctx.font = '28px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🎓', 0, 0);
+        } else if (this.type === 'paper') {
+            // Swooping paper airplane / exam wisp
+            if (this.vx > 0) ctx.scale(-1, 1);
+            ctx.rotate(Math.sin(this.timeAlive * this.bobFreq) * 0.25);
+            ctx.font = '28px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('✈️', 0, 0);
+        } else {
+            // Coastal Seagull (Custom Animated 2D Vector)
+            if (this.vx > 0) ctx.scale(-1, 1);
+
+            const wingFlap = Math.sin(this.flapTimer);
+
+            // Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.12)';
+            ctx.beginPath();
+            ctx.ellipse(0, 24, 14, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Body
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 16, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Gray tail tips
+            ctx.fillStyle = '#495057';
+            ctx.beginPath();
+            ctx.moveTo(10, -2);
+            ctx.lineTo(20, -5);
+            ctx.lineTo(18, 3);
+            ctx.closePath();
+            ctx.fill();
+
+            // Head & Eye
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(-12, -2, 7, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(-14, -4, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bright Yellow Beak
+            ctx.fillStyle = '#ffb703';
+            ctx.beginPath();
+            ctx.moveTo(-18, -3);
+            ctx.lineTo(-26, -1);
+            ctx.lineTo(-18, 1);
+            ctx.closePath();
+            ctx.fill();
+
+            // Animated Flapping Wings
+            ctx.fillStyle = '#e9ecef';
+            ctx.strokeStyle = '#6c757d';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(-2, -2);
+            const wingTipY = -18 * wingFlap;
+            ctx.quadraticCurveTo(4, wingTipY - 6, 8, wingTipY);
+            ctx.quadraticCurveTo(8, wingTipY + 4, 6, 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
         ctx.restore();
     }
 }
@@ -896,14 +1202,15 @@ class Projectile {
 
 // Boss class
 class Boss {
-    constructor(x, y) {
+    constructor(x, y, bossType = 'goblin') {
         this.x = x;
         this.y = y;
-        this.w = 64;
-        this.h = 64;
-        this.hp = 10;
-        this.maxHp = 10;
-        this.vx = 2;
+        this.bossType = bossType; // 'goblin' or 'titan'
+        this.w = bossType === 'titan' ? 72 : 64;
+        this.h = bossType === 'titan' ? 72 : 64;
+        this.hp = bossType === 'titan' ? 14 : 10;
+        this.maxHp = this.hp;
+        this.vx = bossType === 'titan' ? 2.5 : 2;
         this.vy = 0;
         this.active = true;
         this.state = 'patrol';
@@ -915,26 +1222,33 @@ class Boss {
         
         if (this.state === 'patrol') {
             this.x += this.vx;
-            if (this.x < player.x - 400 || this.x > player.x + 400 || this.x < 100 || this.x > 1500) {
+            if (this.x < player.x - 450 || this.x > player.x + 450 || this.x < 100 || this.x > (mapWidth - 3) * TILE_SIZE) {
                 this.vx *= -1;
             }
             
-            // Boss shoots every 120 frames (2s)
-            if (this.timer % 120 === 0) {
+            // Shooting cadence
+            const interval = this.bossType === 'titan' ? (this.hp <= 7 ? 65 : 90) : 120;
+            if (this.timer % interval === 0) {
                 const dx = player.x - this.x;
                 const dy = player.y - this.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
                 if (dist > 0) {
-                    const speed = 6;
+                    const speed = this.bossType === 'titan' ? 7 : 6;
                     const vx = (dx / dist) * speed;
                     const vy = (dy / dist) * speed;
-                    projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy, false, 'red', 6));
+                    const color = this.bossType === 'titan' ? '#00f5d4' : 'red';
+                    projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy, false, color, 7));
+                    if (this.bossType === 'titan' && this.hp <= 7) {
+                        // Enraged titan shoots double bolt
+                        projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy - 2, false, '#ffd166', 6));
+                    }
                 }
             }
 
-            if (this.timer > 120 && Math.random() > 0.5) {
+            const jumpInterval = this.bossType === 'titan' ? (this.hp <= 7 ? 80 : 110) : 120;
+            if (this.timer > jumpInterval && Math.random() > 0.45) {
                 this.state = 'jump';
-                this.vy = -12;
+                this.vy = this.bossType === 'titan' ? -14 : -12;
                 this.timer = 0;
             }
         } else if (this.state === 'jump') {
@@ -947,7 +1261,10 @@ class Boss {
                 this.vy = 0;
                 this.state = 'patrol';
                 this.timer = 0;
-                // create shockwave effect (omitted for brevity)
+                if (this.bossType === 'titan') {
+                    spawnParticles(this.x + this.w/2, floorY + this.h, '#9b5de5');
+                    spawnParticles(this.x + this.w/2, floorY + this.h, '#ffd700');
+                }
             }
         }
 
@@ -965,13 +1282,22 @@ class Boss {
     takeDamage() {
         this.hp--;
         playSound('hurt');
-        spawnParticles(this.x + this.w/2, this.y + this.h/2, '#000');
+        const pColor = this.bossType === 'titan' ? '#9b5de5' : '#000';
+        spawnParticles(this.x + this.w/2, this.y + this.h/2, pColor);
         if (this.hp <= 0) {
             this.active = false;
             spawnParticles(this.x + this.w/2, this.y + this.h/2, '#ffd700');
+            spawnParticles(this.x + this.w/2, this.y + this.h/2, '#ff477e');
             const remainingActive = bosses.filter(b => b.active).length;
             if (remainingActive === 0 && gameState !== 'CUTSCENE' && gameState !== 'VICTORY') {
-                triggerCutscene();
+                if (currentLevel < levels.length) {
+                    showLevelBanner(`Boss Defeated! Portal Opened! 🌟`);
+                    const portalX = Math.min(mapWidth * TILE_SIZE - 120, Math.max(120, this.x));
+                    collectibles.push(new Collectible(portalX, (mapHeight - 3) * TILE_SIZE, 'portal'));
+                    playSound('win');
+                } else {
+                    triggerCutscene();
+                }
             }
         }
     }
@@ -979,14 +1305,47 @@ class Boss {
         if (!this.active) return;
         ctx.save();
         ctx.translate(this.x - camX, this.y - camY);
-        ctx.font = '64px sans-serif';
-        ctx.fillText('👺', 0, 50);
-        
-        // Health bar
-        ctx.fillStyle = 'red';
-        ctx.fillRect(0, -10, this.w, 5);
-        ctx.fillStyle = 'green';
-        ctx.fillRect(0, -10, this.w * (this.hp / this.maxHp), 5);
+
+        if (this.bossType === 'titan') {
+            // Exam Pressure Titan
+            const auraPulse = Math.sin(this.timer * 0.1) * 6;
+            ctx.shadowColor = this.hp <= 7 ? '#ff0055' : '#9b5de5';
+            ctx.shadowBlur = 15 + auraPulse;
+            ctx.font = '56px sans-serif';
+            ctx.fillText('🧙🏾‍♂️', 0, 56);
+            ctx.shadowBlur = 0;
+
+            // Mortarboard cap floating on top
+            ctx.font = '32px sans-serif';
+            ctx.fillText('🎓', 18, 12);
+
+            if (this.hp <= 7) {
+                ctx.fillStyle = '#ff0055';
+                ctx.font = 'bold 12px "Fredoka One", sans-serif';
+                ctx.fillText('⚡ ENRAGED ⚡', -6, -20);
+            }
+
+            // Health bar
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.fillRect(0, -12, this.w, 7);
+            const hpGrad = ctx.createLinearGradient(0, 0, this.w, 0);
+            hpGrad.addColorStop(0, '#ffd166');
+            hpGrad.addColorStop(1, '#ff477e');
+            ctx.fillStyle = hpGrad;
+            ctx.fillRect(0, -12, this.w * (this.hp / this.maxHp), 7);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0, -12, this.w, 7);
+        } else {
+            // Castle Goblin
+            ctx.font = '64px sans-serif';
+            ctx.fillText('👺', 0, 50);
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0, -10, this.w, 5);
+            ctx.fillStyle = 'green';
+            ctx.fillRect(0, -10, this.w * (this.hp / this.maxHp), 5);
+        }
+
         ctx.restore();
     }
 }
@@ -1002,6 +1361,8 @@ let collectibles = [];
 let particles = [];
 let projectiles = [];
 let bosses = [];
+let birds = [];
+let birdSpawnTimer = 0;
 let bgmStarted = false;
 let cutsceneTimer = 0;
 let cutscenePhase = 0;
@@ -1019,6 +1380,7 @@ function triggerCutscene() {
     enemies = [];
     collectibles = [];
     projectiles = []; // Clear boss projectiles so none hit the player!
+    birds = [];
 
     if (player) {
         player.vx = 0;
@@ -1102,6 +1464,119 @@ function spawnParticles(x, y, color) {
     }
 }
 
+// --- Helper Scenery Functions ---
+function drawPalmTree(ctx, x, y, scale = 1.0) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+
+    // Trunk
+    ctx.strokeStyle = '#6b4226';
+    ctx.lineWidth = 9;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(15, -45, 10, -90);
+    ctx.stroke();
+
+    // Palm Fronds
+    ctx.strokeStyle = '#2d6a4f';
+    ctx.lineWidth = 5;
+    const leafAngles = [-0.85, -0.4, 0, 0.4, 0.85];
+    leafAngles.forEach(angle => {
+        ctx.save();
+        ctx.translate(10, -90);
+        ctx.rotate(angle);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(25, -20, 52, 12);
+        ctx.stroke();
+        ctx.restore();
+    });
+
+    // Coconuts
+    ctx.fillStyle = '#4a2810';
+    ctx.beginPath();
+    ctx.arc(6, -88, 5, 0, Math.PI * 2);
+    ctx.arc(14, -86, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function drawChandelier(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Chain
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, 28);
+    ctx.stroke();
+
+    // Curved bracket
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 28, 24, 0, Math.PI);
+    ctx.stroke();
+
+    // Candles
+    [-18, 0, 18].forEach(cx => {
+        // Warm glow halo
+        const halo = ctx.createRadialGradient(cx, 22, 2, cx, 22, 14);
+        halo.addColorStop(0, 'rgba(255, 235, 150, 0.9)');
+        halo.addColorStop(1, 'rgba(255, 200, 50, 0)');
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(cx, 22, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Flame
+        ctx.fillStyle = '#ff7b00';
+        ctx.beginPath();
+        ctx.arc(cx, 23, 3, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    ctx.restore();
+}
+
+const convocationConfetti = [];
+for (let i = 0; i < 45; i++) {
+    convocationConfetti.push({
+        x: Math.random() * 1600,
+        y: Math.random() * 800,
+        size: Math.random() * 6 + 3,
+        color: ['#ffd700', '#ff477e', '#00f5d4', '#ffffff', '#fee440', '#ff7096'][Math.floor(Math.random() * 6)],
+        speed: Math.random() * 1.4 + 0.7,
+        rot: Math.random() * Math.PI
+    });
+}
+
+function drawFloatingConfetti(ctx) {
+    ctx.save();
+    convocationConfetti.forEach(p => {
+        p.y += p.speed;
+        p.rot += 0.05;
+        if (p.y > 800) {
+            p.y = -10;
+            p.x = Math.random() * 1600;
+        }
+        const sx = p.x - camera.x * 0.35;
+        const sy = p.y - camera.y * 0.35;
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/3, p.size, p.size * 0.6);
+        ctx.restore();
+    });
+    ctx.restore();
+}
+
 // --- Level Loading ---
 function loadLevel(lvlIndex) {
     const lvl = levels[lvlIndex - 1];
@@ -1114,6 +1589,8 @@ function loadLevel(lvlIndex) {
     particles = [];
     projectiles = [];
     bosses = [];
+    birds = [];
+    birdSpawnTimer = 0;
     
     for (let r = 0; r < mapHeight; r++) {
         for (let c = 0; c < mapWidth; c++) {
@@ -1122,7 +1599,6 @@ function loadLevel(lvlIndex) {
                 const savedHp = player ? player.hp : 3;
                 player = new Player(c * TILE_SIZE, r * TILE_SIZE);
                 player.hp = savedHp; // Keep health between levels
-                // Clear the tile logically
                 let rowStr = currentMap[r];
                 currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
             } else if (tile === '2') {
@@ -1135,6 +1611,18 @@ function loadLevel(lvlIndex) {
                 currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
             } else if (tile === '8') {
                 enemies.push(new Enemy(c * TILE_SIZE, r * TILE_SIZE, 'ant'));
+                let rowStr = currentMap[r];
+                currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
+            } else if (tile === 'C') {
+                enemies.push(new Enemy(c * TILE_SIZE, r * TILE_SIZE, 'crab'));
+                let rowStr = currentMap[r];
+                currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
+            } else if (tile === 'A') {
+                enemies.push(new Enemy(c * TILE_SIZE, r * TILE_SIZE, 'alarm'));
+                let rowStr = currentMap[r];
+                currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
+            } else if (tile === 'E') {
+                enemies.push(new Enemy(c * TILE_SIZE, r * TILE_SIZE, 'paper'));
                 let rowStr = currentMap[r];
                 currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
             } else if (tile === '4') {
@@ -1150,16 +1638,35 @@ function loadLevel(lvlIndex) {
                 let rowStr = currentMap[r];
                 currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
             } else if (tile === 'B') {
-                bosses.push(new Boss(c * TILE_SIZE, r * TILE_SIZE));
+                const bossType = lvlIndex === 6 ? 'titan' : 'goblin';
+                bosses.push(new Boss(c * TILE_SIZE, r * TILE_SIZE, bossType));
                 let rowStr = currentMap[r];
                 currentMap[r] = rowStr.substr(0, c) + '0' + rowStr.substr(c + 1);
             }
         }
     }
+
+    // Spawn initial atmospheric flying birds/items
+    if (lvlIndex === 4) {
+        birds.push(new BirdEnemy(600, 140, -1, 3.0, 'seagull'));
+        birds.push(new BirdEnemy(1100, 180, -1, 3.4, 'seagull'));
+    } else if (lvlIndex === 5) {
+        birds.push(new BirdEnemy(700, 160, -1, 2.4, 'paper'));
+    } else if (lvlIndex === 6) {
+        birds.push(new BirdEnemy(850, 140, -1, 2.7, 'mortarboard'));
+    }
     
     camera = new Camera();
     updateHUD();
-    document.getElementById('levelDisplay').innerText = `Level ${currentLevel}`;
+    const levelNames = [
+        "Level 1: Birthday Meadow 🌸",
+        "Level 2: Gift Valley 🎁",
+        "Level 3: Goblin Castle 🏰",
+        "Level 4: Cape Coast Beach 🏖️",
+        "Level 5: UCC Exam Halls 📚",
+        "Level 6: Grand Convocation 👑"
+    ];
+    document.getElementById('levelDisplay').innerText = levelNames[lvlIndex - 1] || `Level ${lvlIndex}`;
 }
 
 // --- Main Loop ---
@@ -1171,11 +1678,47 @@ function update() {
         enemies.forEach(e => e.update());
         collectibles.forEach(c => c.update());
         bosses.forEach(b => b.update());
+        birds.forEach(b => b.update());
         
         // Remove inactive entities
         enemies = enemies.filter(e => e.active);
         collectibles = collectibles.filter(c => c.active);
         bosses = bosses.filter(b => b.active);
+        birds = birds.filter(b => b.active);
+
+        // Periodically spawn birds & airborne enemies
+        birdSpawnTimer++;
+        if (currentLevel === 4) {
+            // Beach: seagulls fly by periodically every ~3.5 seconds
+            if (birdSpawnTimer > 210) {
+                birdSpawnTimer = 0;
+                const fromRight = Math.random() > 0.4;
+                const spawnX = fromRight ? camera.x + GAME_WIDTH + 60 : camera.x - 60;
+                const dir = fromRight ? -1 : 1;
+                const spawnY = Math.random() * (canvas.height * 0.4) + camera.y + 40;
+                birds.push(new BirdEnemy(spawnX, spawnY, dir, 2.6 + Math.random() * 1.6, 'seagull'));
+            }
+        } else if (currentLevel === 5) {
+            // Exam halls: paper airplanes swoop across
+            if (birdSpawnTimer > 250) {
+                birdSpawnTimer = 0;
+                const fromRight = Math.random() > 0.5;
+                const spawnX = fromRight ? camera.x + GAME_WIDTH + 60 : camera.x - 60;
+                const dir = fromRight ? -1 : 1;
+                const spawnY = Math.random() * (canvas.height * 0.38) + camera.y + 50;
+                birds.push(new BirdEnemy(spawnX, spawnY, dir, 2.2 + Math.random() * 1.4, 'paper'));
+            }
+        } else if (currentLevel === 6) {
+            // Convocation: flying graduation mortarboards
+            if (birdSpawnTimer > 230) {
+                birdSpawnTimer = 0;
+                const fromRight = Math.random() > 0.5;
+                const spawnX = fromRight ? camera.x + GAME_WIDTH + 60 : camera.x - 60;
+                const dir = fromRight ? -1 : 1;
+                const spawnY = Math.random() * (canvas.height * 0.4) + camera.y + 40;
+                birds.push(new BirdEnemy(spawnX, spawnY, dir, 2.5 + Math.random() * 1.5, 'mortarboard'));
+            }
+        }
         
         // Projectiles
         projectiles.forEach(p => {
@@ -1197,6 +1740,19 @@ function update() {
                         spawnParticles(e.x + e.w/2, e.y + e.h/2, '#555');
                         playSound('hurt'); // Or a small pop sound
                         score += 2; // Extra points for killing an enemy
+                        updateHUD();
+                    }
+                });
+
+                birds.forEach(b => {
+                    if (b.active && rectIntersect(p, b)) {
+                        b.active = false;
+                        p.active = false;
+                        const pColor = b.type === 'mortarboard' ? '#ffd700' : (b.type === 'paper' ? '#48cae4' : '#ffffff');
+                        spawnParticles(b.x + b.w/2, b.y + b.h/2, pColor);
+                        spawnParticles(b.x + b.w/2, b.y + b.h/2, '#ffd700');
+                        playSound('hurt');
+                        score += 3;
                         updateHUD();
                     }
                 });
@@ -1252,41 +1808,200 @@ function draw() {
     if (gameState === 'MENU' || gameState === 'PLAYING' || gameState === 'PAUSED' || gameState === 'GAMEOVER' || gameState === 'VICTORY' || gameState === 'CUTSCENE') {
         const lvl = levels[currentLevel - 1];
         
-        // Background
-        ctx.fillStyle = lvl.bg;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // --- Level Themed Backgrounds ---
+        if (lvl.theme === 'beach') {
+            // Cape Coast Tropical Sunset
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGrad.addColorStop(0, '#3a1c71');    // Twilight purple
+            skyGrad.addColorStop(0.35, '#d76d77'); // Warm sunset rose
+            skyGrad.addColorStop(0.7, '#ffaf7b');  // Golden hour orange
+            skyGrad.addColorStop(1, '#ffe0a3');    // Soft sand glow
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Glowing Tropical Sun
+            const sunX = canvas.width * 0.72 - (camera.x * 0.04);
+            const sunY = 150 - (camera.y * 0.03);
+            const sunGlow = ctx.createRadialGradient(sunX, sunY, 15, sunX, sunY, 110);
+            sunGlow.addColorStop(0, 'rgba(255, 245, 170, 1)');
+            sunGlow.addColorStop(0.4, 'rgba(255, 180, 80, 0.65)');
+            sunGlow.addColorStop(1, 'rgba(255, 150, 50, 0)');
+            ctx.fillStyle = sunGlow;
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 110, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ocean Horizon with animated turquoise rolling waves
+            const oceanY = Math.max(160, canvas.height - 230 - (camera.y * 0.12));
+            const oceanGrad = ctx.createLinearGradient(0, oceanY, 0, canvas.height);
+            oceanGrad.addColorStop(0, '#0077b6');
+            oceanGrad.addColorStop(0.5, '#0096c7');
+            oceanGrad.addColorStop(1, '#48cae4');
+            ctx.fillStyle = oceanGrad;
+            ctx.fillRect(0, oceanY, canvas.width, canvas.height - oceanY);
+
+            // Animated white sea foam waves
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.beginPath();
+            const waveTime = Date.now() / 450;
+            ctx.moveTo(0, oceanY);
+            for (let wx = 0; wx <= canvas.width; wx += 25) {
+                const waveH = Math.sin(wx * 0.03 + waveTime) * 6 + Math.cos(wx * 0.015 - waveTime * 0.8) * 3;
+                ctx.lineTo(wx, oceanY + waveH);
+            }
+            ctx.lineTo(canvas.width, oceanY + 12);
+            ctx.lineTo(0, oceanY + 12);
+            ctx.closePath();
+            ctx.fill();
+
+            // Parallax swaying palm tree silhouettes in background
+            ctx.fillStyle = 'rgba(40, 20, 60, 0.45)';
+            for (let i = 0; i < 7; i++) {
+                const px = ((i * 340) - (camera.x * 0.22)) % ((mapWidth + 5) * TILE_SIZE);
+                if (px > -100 && px < canvas.width + 100) {
+                    drawPalmTree(ctx, px, oceanY - 5, 1.15);
+                }
+            }
+        } else if (lvl.theme === 'study') {
+            // UCC Midnight Lecture Hall
+            const hallGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            hallGrad.addColorStop(0, '#0f2027');
+            hallGrad.addColorStop(0.5, '#203a43');
+            hallGrad.addColorStop(1, '#2c5364');
+            ctx.fillStyle = hallGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Giant Chalkboard wall in background with UCC graduation & love math
+            const boardX = 80 - (camera.x * 0.18);
+            const boardY = 70 - (camera.y * 0.12);
+            ctx.fillStyle = '#1e3d2f';
+            ctx.strokeStyle = '#8d5524';
+            ctx.lineWidth = 7;
+            ctx.fillRect(boardX, boardY, 680, 170);
+            ctx.strokeRect(boardX, boardY, 680, 170);
+
+            // Chalk writings
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.font = 'bold 20px "Fredoka One", cursive';
+            ctx.fillText("UCC SCIENCE & EXAM QUAD 🎓", boardX + 25, boardY + 36);
+            ctx.font = '15px sans-serif';
+            ctx.fillText("GPA = 4.0 First Class Queen 👑", boardX + 25, boardY + 68);
+            ctx.fillText("Elizabeth + Degree = Baddie Certified 🔥", boardX + 25, boardY + 98);
+            ctx.fillText("Samuel Bekoe was here! 💌  lim(Stress) -> 0", boardX + 25, boardY + 128);
+            ctx.fillText("∫ Love(Lizzy) dt = ∞", boardX + 430, boardY + 68);
+            ctx.fillText("UCC 2022-2026 Conquered! ✨", boardX + 430, boardY + 98);
+        } else if (lvl.theme === 'convocation') {
+            // Royal Purple & Maroon Velvet Convocation Hall
+            const hallGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            hallGrad.addColorStop(0, '#2b0938');
+            hallGrad.addColorStop(0.55, '#4a1236');
+            hallGrad.addColorStop(1, '#240019');
+            ctx.fillStyle = hallGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Grand Convocation Banner
+            const bannerX = canvas.width / 2 - (camera.x * 0.05);
+            ctx.fillStyle = '#ffb703';
+            ctx.font = 'bold 22px "Fredoka One", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("👑 GRAND CONVOCATION & ROYAL CORONATION 👑", bannerX, 55 - (camera.y * 0.05));
+            ctx.fillStyle = '#ffd166';
+            ctx.font = '15px "Fredoka One", sans-serif';
+            ctx.fillText("University of Cape Coast • Honoring Queen Elizabeth Aryee", bannerX, 82 - (camera.y * 0.05));
+            ctx.textAlign = 'left';
+
+            // Hanging golden chandeliers
+            for (let i = 0; i < 6; i++) {
+                const cx = (i * 300 + 70) - (camera.x * 0.25);
+                drawChandelier(ctx, cx, 12 - (camera.y * 0.08));
+            }
+
+            // Drifting celebration confetti
+            drawFloatingConfetti(ctx);
+        } else {
+            // Default background for levels 1-3
+            ctx.fillStyle = lvl.bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Background Clouds
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.font = '64px sans-serif';
+            for (let i = 0; i < 5; i++) {
+                ctx.fillText('☁️', ((i * 300) - (camera.x * 0.2)) % (mapWidth*TILE_SIZE), 100 + (i%2)*50);
+            }
+        }
         
         if (!camera) return;
 
-        // Background Clouds (simple parallax)
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.font = '64px sans-serif';
-        for(let i=0; i<5; i++) {
-            ctx.fillText('☁️', ((i * 300) - (camera.x * 0.2)) % (mapWidth*TILE_SIZE), 100 + (i%2)*50);
-        }
-
         ctx.save();
         
-        // Draw Map
-        ctx.fillStyle = lvl.floorColor;
+        // --- Draw Map Tiles ---
         for (let r = 0; r < mapHeight; r++) {
             for (let c = 0; c < mapWidth; c++) {
                 const tile = getTile(c, r);
+                const tileX = c * TILE_SIZE - camera.x;
+                const tileY = r * TILE_SIZE - camera.y;
+
                 if (tile === 1) {
-                    ctx.fillRect(c * TILE_SIZE - camera.x, r * TILE_SIZE - camera.y, TILE_SIZE, TILE_SIZE);
-                    // Add some pattern
-                    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-                    ctx.strokeRect(c * TILE_SIZE - camera.x, r * TILE_SIZE - camera.y, TILE_SIZE, TILE_SIZE);
+                    if (lvl.tileType === 'sand' && sandPattern) {
+                        ctx.save();
+                        ctx.translate(-camera.x, -camera.y);
+                        ctx.fillStyle = sandPattern;
+                        ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        if (r === 0 || getTile(c, r - 1) === 0) {
+                            ctx.fillStyle = '#ffeaa7';
+                            ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, 5);
+                        }
+                        ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+                        ctx.strokeRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        ctx.restore();
+                    } else if (lvl.tileType === 'books' && booksPattern) {
+                        ctx.save();
+                        ctx.translate(-camera.x, -camera.y);
+                        ctx.fillStyle = booksPattern;
+                        ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        if (r === 0 || getTile(c, r - 1) === 0) {
+                            ctx.fillStyle = '#ffd166';
+                            ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, 4);
+                        }
+                        ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+                        ctx.strokeRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        ctx.restore();
+                    } else if (lvl.tileType === 'carpet' && carpetPattern) {
+                        ctx.save();
+                        ctx.translate(-camera.x, -camera.y);
+                        ctx.fillStyle = carpetPattern;
+                        ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        if (r === 0 || getTile(c, r - 1) === 0) {
+                            ctx.fillStyle = '#ffd700';
+                            ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, 5);
+                        }
+                        ctx.strokeStyle = 'rgba(128, 0, 0, 0.45)';
+                        ctx.strokeRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        ctx.restore();
+                    } else {
+                        // Standard floor color
+                        ctx.fillStyle = lvl.floorColor;
+                        ctx.fillRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+                        ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+                        ctx.strokeRect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+                    }
                 } else if (tile === 6) {
-                    ctx.fillStyle = 'gray';
-                    ctx.beginPath();
-                    const px = c * TILE_SIZE - camera.x;
-                    const py = r * TILE_SIZE - camera.y + TILE_SIZE;
-                    ctx.moveTo(px, py);
-                    ctx.lineTo(px + TILE_SIZE/2, py - TILE_SIZE/2);
-                    ctx.lineTo(px + TILE_SIZE, py);
-                    ctx.fill();
-                    ctx.fillStyle = lvl.floorColor; // reset
+                    // Hazard spikes / quicksand
+                    if (lvl.theme === 'beach') {
+                        ctx.fillStyle = 'rgba(0, 119, 182, 0.85)';
+                        ctx.fillRect(tileX, tileY + 10, TILE_SIZE, TILE_SIZE - 10);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = '22px sans-serif';
+                        ctx.fillText('🌊', tileX + 8, tileY + 32);
+                    } else {
+                        ctx.fillStyle = 'gray';
+                        ctx.beginPath();
+                        ctx.moveTo(tileX, tileY + TILE_SIZE);
+                        ctx.lineTo(tileX + TILE_SIZE/2, tileY + TILE_SIZE/2);
+                        ctx.lineTo(tileX + TILE_SIZE, tileY + TILE_SIZE);
+                        ctx.fill();
+                    }
                 }
             }
         }
@@ -1294,6 +2009,7 @@ function draw() {
         // Draw Entities
         collectibles.forEach(c => c.draw(ctx, camera.x, camera.y));
         enemies.forEach(e => e.draw(ctx, camera.x, camera.y));
+        birds.forEach(b => b.draw(ctx, camera.x, camera.y));
         bosses.forEach(b => b.draw(ctx, camera.x, camera.y));
         
         // Projectiles
@@ -1592,7 +2308,15 @@ function levelComplete() {
         currentLevel++;
         score = 0; // Reset score for new level
         loadLevel(currentLevel);
-        showLevelBanner(`Level ${currentLevel}`);
+        const levelNames = [
+            "Level 1: Birthday Meadow 🌸",
+            "Level 2: Gift Valley 🎁",
+            "Level 3: Goblin Castle 🏰",
+            "Level 4: Cape Coast Beach 🏖️",
+            "Level 5: UCC Exam Halls 📚",
+            "Level 6: Grand Convocation 👑"
+        ];
+        showLevelBanner(levelNames[currentLevel - 1] || `Level ${currentLevel}`);
     } else {
         triggerCutscene();
     }

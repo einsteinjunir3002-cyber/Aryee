@@ -289,7 +289,7 @@ function createImageCards() {
     const galleryContainer = document.getElementById('galleryContainer');
     galleryContainer.innerHTML = '';
     
-    // All 14 unique images from Pics/
+    // All 21 unique media files from Pics/ (including videos)
     const allUniqueImages = [
         'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg',
         'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg',
@@ -304,7 +304,14 @@ function createImageCards() {
         'Pics/20251219_163657.jpg.jpeg',
         'Pics/IMG-20250611-WA0198.jpg.jpeg',
         'Pics/Snapchat-194509455.jpg.jpeg',
-        'Pics/Snapchat-441229762.jpg.jpeg'
+        'Pics/Snapchat-441229762.jpg.jpeg',
+        'Pics/WhatsApp Image 2026-10-22 at 12.42.47 PM.jpeg',
+        'Pics/WhatsApp Image 2026-10-22 at 12.42.48 PM (1).jpeg',
+        'Pics/WhatsApp Image 2026-10-22 at 12.42.48 PM.jpeg',
+        'Pics/WhatsApp Image 2026-10-22 at 12.42.49 PM (1).jpeg',
+        'Pics/WhatsApp Image 2026-10-22 at 12.42.49 PM.jpeg',
+        'Pics/WhatsApp Image 2026-10-22 at 12.42.50 PM.jpeg',
+        'Pics/WhatsApp Video 2026-10-22 at 12.42.48 PM.mp4'
     ];
     
     const shuffle = (arr) => {
@@ -316,27 +323,8 @@ function createImageCards() {
         return copy;
     };
 
-    // First display all 14 distinct images in randomized order
-    const firstSet = shuffle(allUniqueImages);
-    
-    // For extra lookbook cards (21 total), pick 7 more pictures ensuring
-    // no repeated picture appears within 9 cards of its earlier occurrence
-    const remainingCandidates = shuffle(allUniqueImages);
-    const secondSet = [];
-    for (const img of remainingCandidates) {
-        if (secondSet.length >= 7) break;
-        const lastIdx = firstSet.lastIndexOf(img);
-        const distance = (firstSet.length + secondSet.length) - lastIdx;
-        if (distance >= 9) {
-            secondSet.push(img);
-        }
-    }
-    for (const img of remainingCandidates) {
-        if (secondSet.length >= 7) break;
-        if (!secondSet.includes(img)) secondSet.push(img);
-    }
-    
-    const imagePaths = [...firstSet, ...secondSet];
+    // Display all 21 distinct media in randomized order (zero repeats!)
+    const imagePaths = shuffle(allUniqueImages);
     
     imagePaths.forEach((path, index) => {
         createImageCard(galleryContainer, path, index);
