@@ -55,7 +55,7 @@ let timeElapsed = 0;
 let startTime = 0;
 let isBonusRound = false;
 let bonusRoundTimer = 0;
-const BONUS_ROUND_DURATION = 300; // 5 seconds at 60fps
+const BONUS_ROUND_DURATION = 180; // 3 seconds at 60fps
 
 
 const giftData = [
@@ -1635,7 +1635,7 @@ class Boss {
 // --- Bonus Round & Kraken Spawning Logic ---
 function startBonusRound() {
     isBonusRound = true;
-    bonusRoundTimer = 300; // 5 seconds at 60fps
+    bonusRoundTimer = BONUS_ROUND_DURATION; // 3 seconds at 60fps
     projectiles = []; // Clear dangerous projectiles so player can rush safely
     
     // Spawn 40 bonus cupcakes all across the Grand Hall!
@@ -1665,7 +1665,7 @@ function startBonusRound() {
     });
 
     playSound('win');
-    showLevelBanner("🧁 CUPCAKE RUSH: 5 SECONDS! 🧁");
+    showLevelBanner("🧁 CUPCAKE RUSH: 3 SECONDS! 🧁");
 }
 
 function endBonusRoundAndSpawnKrakens() {
