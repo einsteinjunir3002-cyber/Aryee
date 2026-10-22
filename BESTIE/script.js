@@ -130,7 +130,17 @@ async function loadGallery() {
     "./Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg",
     "./Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg",
     "./Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg",
-    "./Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg"
+    "./Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg",
+    "./Pics/WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg",
+    "./Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg",
+    "./Pics/20250626_172140.jpg.jpeg",
+    "./Pics/20250626_172142.jpg.jpeg",
+    "./Pics/20250717_103422.jpg.jpeg",
+    "./Pics/20250816_200652.jpg.jpeg",
+    "./Pics/20251219_163657.jpg.jpeg",
+    "./Pics/IMG-20250611-WA0198.jpg.jpeg",
+    "./Pics/Snapchat-194509455.jpg.jpeg",
+    "./Pics/Snapchat-441229762.jpg.jpeg"
   ];
   images = shuffle(staticImages);
   galleryGrid.innerHTML = '';

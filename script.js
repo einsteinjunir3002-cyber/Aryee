@@ -289,22 +289,54 @@ function createImageCards() {
     const galleryContainer = document.getElementById('galleryContainer');
     galleryContainer.innerHTML = '';
     
-    // Cycle through all 6 distinct pictures in order, then return to the 1st pic and continue
-    // This ensures repeated pictures are never close to each other
-    const distinctImages = [
+    // All 14 unique images from Pics/
+    const allUniqueImages = [
         'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg',
         'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg',
         'Pics/WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg',
         'Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg',
         'Pics/WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg',
-        'Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg'
+        'Pics/WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg',
+        'Pics/20250626_172140.jpg.jpeg',
+        'Pics/20250626_172142.jpg.jpeg',
+        'Pics/20250717_103422.jpg.jpeg',
+        'Pics/20250816_200652.jpg.jpeg',
+        'Pics/20251219_163657.jpg.jpeg',
+        'Pics/IMG-20250611-WA0198.jpg.jpeg',
+        'Pics/Snapchat-194509455.jpg.jpeg',
+        'Pics/Snapchat-441229762.jpg.jpeg'
     ];
     
-    const repeatCycles = 3; // 18 cards in total
-    const imagePaths = [];
-    for (let r = 0; r < repeatCycles; r++) {
-        imagePaths.push(...distinctImages);
+    const shuffle = (arr) => {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    };
+
+    // First display all 14 distinct images in randomized order
+    const firstSet = shuffle(allUniqueImages);
+    
+    // For extra lookbook cards (21 total), pick 7 more pictures ensuring
+    // no repeated picture appears within 9 cards of its earlier occurrence
+    const remainingCandidates = shuffle(allUniqueImages);
+    const secondSet = [];
+    for (const img of remainingCandidates) {
+        if (secondSet.length >= 7) break;
+        const lastIdx = firstSet.lastIndexOf(img);
+        const distance = (firstSet.length + secondSet.length) - lastIdx;
+        if (distance >= 9) {
+            secondSet.push(img);
+        }
     }
+    for (const img of remainingCandidates) {
+        if (secondSet.length >= 7) break;
+        if (!secondSet.includes(img)) secondSet.push(img);
+    }
+    
+    const imagePaths = [...firstSet, ...secondSet];
     
     imagePaths.forEach((path, index) => {
         createImageCard(galleryContainer, path, index);

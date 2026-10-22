@@ -33,24 +33,133 @@ let timeElapsed = 0;
 let startTime = 0;
 
 const giftData = [
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "Hold on Elizabeth, did UCC give you a degree or a license to cause cardiac arrests with that red carpet dress? You look dangerously gorgeous! 🔥😍" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg', msg: "That electric blue cocktail is icy, but you're serving 100% tropical heat! That cheeky side-eye through the straw is pure flirtatious trouble! 🍹😘" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg', msg: "4 solid years in UCC ain't easy at all, but look at you walking Cape Coast beach looking like a full-time supermodel! Certified degree baddie! 🌴🎓" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg', msg: "Warning: That toothy smile is a public hazard! It's too bright, too sweet, and entirely too cute! Don't ever stop laughing like that, Lizzy! 😁💖" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg', msg: "Look at me back there playing your personal paparazzi! Honestly, capturing Elizabeth's beauty deserves its own full-time salary! 📸😉" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg', msg: "Nerdy-chic specs + glowing melanin = deadly combination. Are you made of copper and tellurium? Because you are Cu-Te, Elizabeth! 👓✨" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "Are you a 4-year degree from Cape Coast? Because you took my breath away and had my heart working overtime! Happy Birthday, Queen Lizzy! 🎓❤️" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg', msg: "Excuse me Miss Elizabeth, do you have a map? Because I got completely lost in those eyes while you were sipping that ocean drink! 🏖️💋" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg', msg: "UCC tried to stress you with exams for 4 years and you came out glowing like a freshly crowned queen. What an absolute flex! 💅👑" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg', msg: "If smiles were currency, you could buy the entire Central Region! Happy Birthday to the sweetest, funniest friend ever! 🥳💎" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg', msg: "They say behind every successful graduate is... a loyal friend trying to get the camera lighting right for Queen Elizabeth! 😂✨" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg', msg: "How can someone be this smart, this funny, and this dangerously pretty at the same time? Elizabeth, save some perfection for the rest of us! 🥺❤️" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "ABSAG Awards wasn't ready, UCC wasn't ready, and honestly, none of us were ready for those strappy heels and that slit! Top-tier stunning! 🔥💃" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg', msg: "If being cute was an exam at UCC, you wouldn't just get an A+, you'd write the textbook! Enjoy every sip and every birthday treat, Lizzy! 🍰🥂" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg', msg: "From the lecture halls of Cape Coast to ocean breezes! Cheers to completing your degree this year! 4 years in UCC is no joke, superstar! 🎓🚀" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg', msg: "A smile so radiant it makes the sun look like an amateur. Happy Birthday Elizabeth, stay goofy and charming forever! ☀️🥰" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg', msg: "Smart girl aesthetic on 100%! Those glasses aren't just for reading, they're for looking drop-dead gorgeous! 👓😍" },
-    { img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg', msg: "Happy Birthday Elizabeth! May this new year bring you fat job offers, soft life, expensive vacations, and lots of reasons to celebrate! 🍾🎉" }
+    // 1. WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg (Red Carpet Queen)
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg',
+        msg: "Hold on Elizabeth, did UCC give you a degree or a license to cause cardiac arrests with that red carpet dress? You look dangerously gorgeous! 🔥😍"
+    },
+    // 2. WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg (Blue Cocktail)
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg',
+        msg: "That electric blue cocktail is icy, but you're serving 100% tropical heat! That cheeky side-eye through the straw is pure flirtatious trouble! 🍹😘"
+    },
+    // 3. WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg (Beach Supermodel)
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg',
+        msg: "4 solid years in UCC ain't easy at all, but look at you walking Cape Coast beach looking like a full-time supermodel! Certified degree baddie! 🌴🎓"
+    },
+    // 4. WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg (Toothy Smile)
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg',
+        msg: "Warning: That toothy smile is a public hazard! It's too bright, too sweet, and entirely too cute! Don't ever stop laughing like that, Lizzy! 😁💖"
+    },
+    // 5. WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg (VIP & Personal Paparazzi)
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg',
+        msg: "Look at me back there playing your personal paparazzi! Honestly, capturing Elizabeth's beauty deserves its own full-time salary! 📸😉"
+    },
+    // 6. WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg (Nerdy-Chic Specs)
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg',
+        msg: "Nerdy-chic specs + glowing melanin = deadly combination. Are you made of copper and tellurium? Because you are Cu-Te, Elizabeth! 👓✨"
+    },
+    // 7. 20250626_172140.jpg.jpeg (Regal Stunner)
+    {
+        img: '20250626_172140.jpg.jpeg',
+        msg: "Wait a second Elizabeth, is this a candid memory or a Vogue editorial cover? The posture, the elegance, the queen energy—unrivaled! 👑✨"
+    },
+    // 8. 20250626_172142.jpg.jpeg (Effortless Class)
+    {
+        img: '20250626_172142.jpg.jpeg',
+        msg: "Looking at this photo and wondering how someone can look this effortlessly classy without even trying. Top-tier beauty! 🌟💃"
+    },
+    // 9. 20250717_103422.jpg.jpeg (Sunshine Radiance)
+    {
+        img: '20250717_103422.jpg.jpeg',
+        msg: "Sunshine, great vibes, and Elizabeth looking like pure royalty. Cape Coast was truly blessed to have you for 4 whole years! ☀️😍"
+    },
+    // 10. 20250816_200652.jpg.jpeg (Evening Glow)
+    {
+        img: '20250816_200652.jpg.jpeg',
+        msg: "Evening glow on point! If looking this pretty was against university regulations, UCC campus security would have issued a warrant! 🚨💖"
+    },
+    // 11. 20251219_163657.jpg.jpeg (Sparkling Smile)
+    {
+        img: '20251219_163657.jpg.jpeg',
+        msg: "That genuine, sparkling look proves you don't just conquer academic degrees, you conquer hearts everywhere you step! 💫🥰"
+    },
+    // 12. IMG-20250611-WA0198.jpg.jpeg (Natural Head-Turner)
+    {
+        img: 'IMG-20250611-WA0198.jpg.jpeg',
+        msg: "Casual, fresh, and cute on 100%! How does someone wake up and look this ridiculously charming on an ordinary day? 🥺❤️"
+    },
+    // 13. Snapchat-194509455.jpg.jpeg (Goofy Charm)
+    {
+        img: 'Snapchat-194509455.jpg.jpeg',
+        msg: "Playful goofy energy activated! Don't let that sharp UCC degree fool anyone, Elizabeth is 100% charming trouble! 😜✨"
+    },
+    // 14. Snapchat-441229762.jpg.jpeg (Flawless Face Card)
+    {
+        img: 'Snapchat-441229762.jpg.jpeg',
+        msg: "Snapchat cameras could never do full justice, but this selfie is proof that Elizabeth's face card never declines! 💅🔥"
+    },
+    // Fresh Alternate Messages for Round 2 (So if any photo repeats, the message is 100% fresh!)
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg',
+        msg: "ABSAG Awards wasn't ready, UCC wasn't ready, and none of us were ready for those heels and that slit! Absolutely majestic! 💃🔥"
+    },
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (2).jpeg',
+        msg: "Excuse me Miss Elizabeth, do you have a compass? Because I got completely lost in those eyes while you were sipping that ocean drink! 🏖️💋"
+    },
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.34.26 AM (1).jpeg',
+        msg: "From the lecture halls of Cape Coast to ocean breezes! Cheers to completing your degree this year! 4 years in UCC is no joke, superstar! 🎓🚀"
+    },
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM (1).jpeg',
+        msg: "If smiles were currency, you could buy the entire Central Region! Happy Birthday to the sweetest, funniest friend ever! 🥳💎"
+    },
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.33.46 AM.jpeg',
+        msg: "They say behind every successful graduate is a loyal friend trying to get the camera lighting right for Queen Elizabeth! 😂✨"
+    },
+    {
+        img: 'WhatsApp Image 2026-10-20 at 8.33.47 AM.jpeg',
+        msg: "Smart girl aesthetic on 100%! Those glasses aren't just for studying, they're for looking drop-dead gorgeous! 👓😍"
+    },
+    {
+        img: '20250626_172140.jpg.jpeg',
+        msg: "They say pictures speak a thousand words, but this one only speaks two: 'Total Stunner'! Happy Birthday Lizzy! 🍾💐"
+    },
+    {
+        img: '20250626_172142.jpg.jpeg',
+        msg: "Unfiltered elegance! May your post-grad life be as smooth, classy, and effortless as you look right here! 🥂✨"
+    },
+    {
+        img: '20250717_103422.jpg.jpeg',
+        msg: "Cape Coast breeze hits different when you've conquered your exams and you're glowing this bright! 🌊✨"
+    },
+    {
+        img: '20250816_200652.jpg.jpeg',
+        msg: "Golden hour or golden girl? You make every background look like it was hand-painted just for you! 🌅💖"
+    },
+    {
+        img: '20251219_163657.jpg.jpeg',
+        msg: "A smile so radiant it makes the sun look like an amateur. Happy Birthday Elizabeth, stay goofy and charming forever! ☀️🥰"
+    },
+    {
+        img: 'IMG-20250611-WA0198.jpg.jpeg',
+        msg: "Cute, calm, and collected! Proof that even in simple candid moments, Queen Lizzy is a natural head-turner! 🌸💫"
+    },
+    {
+        img: 'Snapchat-194509455.jpg.jpeg',
+        msg: "Warning: High dosage of cuteness detected! Side effects include smiling like a fool at your phone screen! 🥰🎉"
+    },
+    {
+        img: 'Snapchat-441229762.jpg.jpeg',
+        msg: "Happy Birthday Elizabeth! May this new year bring you fat job offers, soft life, expensive vacations, and lots of reasons to celebrate! 🍾🎉"
+    }
 ];
 
 function shuffleArray(array) {
@@ -58,6 +167,49 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+// Smart non-repeating gift deck
+let giftDeck = [];
+let giftDeckIndex = 0;
+let lastGiftImage = null;
+
+function initGiftDeck() {
+    giftDeck = [...giftData];
+    shuffleArray(giftDeck);
+    
+    // Ensure that no two identical images are adjacent in the deck
+    for (let i = 1; i < giftDeck.length; i++) {
+        if (giftDeck[i].img === giftDeck[i - 1].img) {
+            for (let j = 0; j < giftDeck.length; j++) {
+                if (j !== i && j !== i - 1 && giftDeck[j].img !== giftDeck[i].img) {
+                    [giftDeck[i], giftDeck[j]] = [giftDeck[j], giftDeck[i]];
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Ensure the first item of new deck does not match the last image seen from the previous deck
+    if (lastGiftImage && giftDeck.length > 1 && giftDeck[0].img === lastGiftImage) {
+        for (let j = 1; j < giftDeck.length; j++) {
+            if (giftDeck[j].img !== lastGiftImage) {
+                [giftDeck[0], giftDeck[j]] = [giftDeck[j], giftDeck[0]];
+                break;
+            }
+        }
+    }
+    giftDeckIndex = 0;
+}
+
+function getNextGift() {
+    if (giftDeck.length === 0 || giftDeckIndex >= giftDeck.length) {
+        initGiftDeck();
+    }
+    const gift = giftDeck[giftDeckIndex];
+    giftDeckIndex++;
+    lastGiftImage = gift.img;
+    return gift;
 }
 let animationFrameId;
 
@@ -1402,9 +1554,8 @@ function showMessage(msg) {
 }
 
 function showSecretMessage() {
-    // Cycle through gifts based on how many have been found globally
-    const idx = (giftsFound - 1) % giftData.length;
-    const currentGift = giftData[idx];
+    // Smart non-repeating gift drawer
+    const currentGift = getNextGift();
     
     document.getElementById('messagePic').classList.remove('hidden');
     
