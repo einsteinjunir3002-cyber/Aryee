@@ -103,7 +103,7 @@
 
         <div id="victoryOverlay" class="overlay hidden">
             <div class="panel victory-panel">
-                <h1 class="rainbow-text">HAPPY BIRTHDAY ELIZABETH! 🎓🎂🎉</h1>
+                <h1 class="rainbow-text" id="victoryTitle">HAPPY BIRTHDAY ELIZABETH! 🎓🎂🎉</h1>
                 
                 <!-- Congratulatory Card from Samuel Bekoe -->
                 <div class="samuel-congrats-card">
@@ -111,24 +111,25 @@
                         <div class="samuel-avatar-badge">🤵🏾‍♂️</div>
                         <div class="samuel-header-text">
                             <h3>Special Congratulations from Samuel Bekoe 💌</h3>
-                            <span class="samuel-subtitle">Your Proud Bestie & Personal Paparazzi</span>
+                            <span class="samuel-subtitle" id="samuelCardSubtitle">Your Proud Bestie & Personal Paparazzi</span>
                         </div>
                     </div>
-                    <div class="samuel-message-body">
-                        <p>“Queen Lizzy! 🎓 Huge congratulations on conquering the final level and completing Elizabeth's Birthday Quest! More importantly, huge congratulations on bagging that hard-earned UCC degree! 4 solid years in Cape Coast wasn't easy at all, but you conquered it with pure brilliance, beauty, and grace. UCC gave you a certificate, but you gave the whole world a masterclass in looking dangerously fine!</p>
+                    <div class="samuel-message-body" id="samuelMessageBody">
+                        <p>“Queen Lizzy! 🎓 Huge congratulations on conquering the level and completing Elizabeth's Birthday Quest! More importantly, huge congratulations on bagging that hard-earned UCC degree! 4 solid years in Cape Coast wasn't easy at all, but you conquered it with pure brilliance, beauty, and grace. UCC gave you a certificate, but you gave the whole world a masterclass in looking dangerously fine!</p>
                         <p>Wishing you infinite blessings, high-paying career moves, soft life, and endless joy today and always! Enjoy your cake, superstar! 🎂🥂💖”</p>
                         <div class="samuel-signature">— Samuel Bekoe ✨</div>
                     </div>
                 </div>
 
                 <div class="stats">
-                    <p style="font-size: 19px; color: var(--primary); margin-bottom: 8px;">🏆 Elizabeth's Quest: Conquered! 🏆</p>
+                    <p id="statsSubtitle" style="font-size: 19px; color: var(--primary); margin-bottom: 8px;">🏆 Elizabeth's Quest: Conquered! 🏆</p>
                     <p>🧁 Cupcakes Collected: <span id="finalCupcakes">0</span></p>
                     <p>🎁 Gifts Found: <span id="finalGifts">0</span></p>
                     <p>⏱️ Play Time: <span id="finalTime">00:00</span></p>
                 </div>
                 
                 <div class="victory-actions">
+                    <button id="nextLevelBtn" class="btn primary" style="background: linear-gradient(135deg, #00b4d8, #0077b6); font-size: 17px; padding: 13px 22px; box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4); display: none;">Proceed to Next Level 🏖️</button>
                     <button id="replayBtn" class="btn primary">Play Again 🔄</button>
                     <button id="celebrateBtn" class="btn" onclick="window.location.href='../wish.html'" style="background: linear-gradient(135deg, #ff477e, #ff7096); color: white;">Full Birthday Celebration ✨</button>
                 </div>

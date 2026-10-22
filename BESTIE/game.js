@@ -331,7 +331,7 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') {
         togglePause();
     }
-    if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140 && (e.key === ' ' || e.key === 'Enter')) {
+    if (gameState === 'CUTSCENE' && cutscenePhase >= 1 && (e.key === ' ' || e.key === 'Enter')) {
         triggerVictory();
     }
 });
@@ -346,22 +346,22 @@ window.addEventListener('keyup', (e) => {
 ['touchstart', 'mousedown'].forEach(evt => {
     document.getElementById('btnLeft').addEventListener(evt, (e) => { 
         e.preventDefault(); 
-        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 1) { triggerVictory(); return; }
         keys.ArrowLeft = true; 
     });
     document.getElementById('btnRight').addEventListener(evt, (e) => { 
         e.preventDefault(); 
-        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 1) { triggerVictory(); return; }
         keys.ArrowRight = true; 
     });
     document.getElementById('btnJump').addEventListener(evt, (e) => { 
         e.preventDefault(); 
-        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 1) { triggerVictory(); return; }
         keys.ArrowUp = true; 
     });
     document.getElementById('btnShoot').addEventListener(evt, (e) => { 
         e.preventDefault(); 
-        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 1) { triggerVictory(); return; }
         keys[" "] = true; 
     });
 });
@@ -1299,12 +1299,17 @@ class Boss {
             spawnParticles(this.x + this.w/2, this.y + this.h/2, '#ff477e');
             const remainingActive = bosses.filter(b => b.active).length;
             if (remainingActive === 0 && gameState !== 'CUTSCENE' && gameState !== 'VICTORY') {
-                if (currentLevel < levels.length) {
+                if (currentLevel === 3) {
+                    // Level 3 Boss defeated! Immediately launch Samuel Bekoe celebration cutscene & congratulatory card
+                    showLevelBanner(`Castle Conquered! 🎉`);
+                    triggerCutscene();
+                } else if (currentLevel < levels.length) {
                     showLevelBanner(`Boss Defeated! Portal Opened! 🌟`);
                     const portalX = Math.min(mapWidth * TILE_SIZE - 120, Math.max(120, this.x));
                     collectibles.push(new Collectible(portalX, (mapHeight - 3) * TILE_SIZE, 'portal'));
                     playSound('win');
                 } else {
+                    // Level 6 Boss defeated!
                     triggerCutscene();
                 }
             }
@@ -2174,15 +2179,21 @@ function draw() {
                     ctx.fillText('Happy Birthday Elizabeth! 🎉🎂', bubbleX + 16, bubbleY + 50);
                     ctx.font = '13px sans-serif';
                     ctx.fillText('Congrats on bagging your UCC degree! 🎓', bubbleX + 16, bubbleY + 70);
-                    ctx.fillText('The hottest & smartest graduate in Ghana! 🔥', bubbleX + 16, bubbleY + 90);
-                    ctx.fillText('Enjoy your cake & soft life, Queen Lizzy! ✨', bubbleX + 16, bubbleY + 110);
+                    if (currentLevel === 3) {
+                        ctx.fillText('Goblin Castle conquered! Beach awaits! 🏖️', bubbleX + 16, bubbleY + 90);
+                        ctx.fillText('Tap to see your congrats & move to Level 4! ✨', bubbleX + 16, bubbleY + 110);
+                    } else {
+                        ctx.fillText('The hottest & smartest graduate in Ghana! 🔥', bubbleX + 16, bubbleY + 90);
+                        ctx.fillText('Enjoy your cake & soft life, Queen Lizzy! ✨', bubbleX + 16, bubbleY + 110);
+                    }
 
                     // Skip prompt (pulsing)
                     const pulseAlpha = 0.5 + 0.5 * Math.sin(cutsceneTimer * 0.12);
                     ctx.fillStyle = `rgba(255, 71, 126, ${pulseAlpha})`;
                     ctx.font = 'bold 11px sans-serif';
                     ctx.textAlign = 'right';
-                    ctx.fillText('[Tap / Press Space to continue ⏩]', bubbleX + bubbleW - 14, bubbleY + 130);
+                    const promptText = currentLevel === 3 ? '[Tap to View Congrats & Proceed ⏩]' : '[Tap / Press Space to continue ⏩]';
+                    ctx.fillText(promptText, bubbleX + bubbleW - 14, bubbleY + 130);
                     ctx.textAlign = 'left';
                 }
             }
@@ -2330,6 +2341,11 @@ function showSecretMessage() {
 
 function levelComplete() {
     spawnParticles(player.x, player.y, '#ffd700');
+    if (currentLevel === 3) {
+        // Milestone: Conquered Level 3! Trigger the congratulatory cutscene & overlay card
+        triggerCutscene();
+        return;
+    }
     if (currentLevel < levels.length) {
         currentLevel++;
         score = 0; // Reset score for new level
@@ -2378,12 +2394,52 @@ function triggerVictory() {
     document.getElementById('finalGifts').innerText = giftsFound;
     document.getElementById('finalTime').innerText = `${m}:${s}`;
     
+    const victoryTitle = document.getElementById('victoryTitle');
+    const samuelCardSubtitle = document.getElementById('samuelCardSubtitle');
+    const samuelMessageBody = document.getElementById('samuelMessageBody');
+    const statsSubtitle = document.getElementById('statsSubtitle');
+    const nextLevelBtn = document.getElementById('nextLevelBtn');
+
+    if (currentLevel === 3) {
+        if (victoryTitle) victoryTitle.innerText = "HAPPY BIRTHDAY ELIZABETH! 🎓🎂🎉";
+        if (samuelCardSubtitle) samuelCardSubtitle.innerText = "Level 3 Conquered • Special Congratulations from Samuel Bekoe 💌";
+        if (samuelMessageBody) {
+            samuelMessageBody.innerHTML = `
+                <p>“Queen Lizzy! 🎓 Huge congratulations on conquering the Goblin Castle and completing Elizabeth's Birthday Quest! More importantly, huge congratulations on bagging that hard-earned UCC degree! 4 solid years in Cape Coast wasn't easy at all, but you conquered it with pure brilliance, beauty, and grace. UCC gave you a certificate, but you gave the whole world a masterclass in looking dangerously fine!</p>
+                <p>Wishing you infinite blessings, high-paying career moves, soft life, and endless joy today and always! Enjoy your cake, superstar! 🎂🥂💖</p>
+                <p style="color: #0077b6; font-weight: bold; margin-top: 10px; background: rgba(0, 180, 216, 0.12); padding: 10px 14px; border-radius: 8px; border-left: 4px solid #00b4d8;">🌟 The journey continues! Click 'Proceed to Next Level' below to walk Cape Coast Beach, conquer UCC Exam Halls, and march to your Royal Convocation!”</p>
+                <div class="samuel-signature">— Samuel Bekoe ✨</div>
+            `;
+        }
+        if (statsSubtitle) statsSubtitle.innerText = "🏆 Milestone Achieved: Goblin Castle Conquered! 🏆";
+        if (nextLevelBtn) {
+            nextLevelBtn.style.display = 'inline-block';
+            nextLevelBtn.innerText = "Proceed to Next Level 🏖️ (Level 4: Beach)";
+        }
+    } else {
+        if (victoryTitle) victoryTitle.innerText = "👑 GRAND CONVOCATION & ROYAL CORONATION! 👑";
+        if (samuelCardSubtitle) samuelCardSubtitle.innerText = "All 6 Levels Mastered • Certified UCC Degree Baddie! 🎓✨";
+        if (samuelMessageBody) {
+            samuelMessageBody.innerHTML = `
+                <p>“ALL HAIL QUEEN ELIZABETH ARYEE! 👑✨ You conquered every single challenge across all 6 levels—from the Birthday Meadow to Cape Coast Beach, crushed the Exam Pressure Titan, and took your rightful place at Convocation! 4 glorious years at UCC celebrated with total perfection.</p>
+                <p>Wishing you endless luxury, high-paying jobs, peace of mind, and soft life today and forever! Happy Birthday Queen Lizzy! 🎂🥂🍾💖”</p>
+                <div class="samuel-signature">— Samuel Bekoe ✨</div>
+            `;
+        }
+        if (statsSubtitle) statsSubtitle.innerText = "👑 All 6 Levels Mastered: Degree Baddie Supreme! 👑";
+        if (nextLevelBtn) {
+            nextLevelBtn.style.display = 'none';
+        }
+    }
+
     // Fireworks effect on canvas
     if (victoryInterval) clearInterval(victoryInterval);
     victoryInterval = setInterval(() => {
         if (gameState === 'VICTORY') {
-            const x = Math.random() * canvas.width + camera.x;
-            const y = Math.random() * (canvas.height/2) + camera.y;
+            const camX = camera ? camera.x : 0;
+            const camY = camera ? camera.y : 0;
+            const x = Math.random() * canvas.width + camX;
+            const y = Math.random() * (canvas.height/2) + camY;
             const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00', '#ff7096'];
             const color = colors[Math.floor(Math.random()*colors.length)];
             spawnParticles(x, y, color);
@@ -2395,10 +2451,27 @@ function triggerVictory() {
 
 // Canvas tap/click to advance cutscene
 canvas.addEventListener('click', () => {
-    if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) {
+    if (gameState === 'CUTSCENE' && cutscenePhase >= 1) {
         triggerVictory();
     }
 });
+
+const nextLevelBtnEl = document.getElementById('nextLevelBtn');
+if (nextLevelBtnEl) {
+    nextLevelBtnEl.addEventListener('click', () => {
+        if (victoryInterval) {
+            clearInterval(victoryInterval);
+            victoryInterval = null;
+        }
+        currentLevel = 4;
+        score = 0;
+        loadLevel(4);
+        gameState = 'PLAYING';
+        hideAllOverlays();
+        document.getElementById('hud').classList.remove('hidden');
+        showLevelBanner("Level 4: Cape Coast Beach 🏖️");
+    });
+}
 
 // --- Event Listeners ---
 document.getElementById('startBtn').addEventListener('click', startGame);
