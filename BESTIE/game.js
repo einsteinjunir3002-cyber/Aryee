@@ -2987,12 +2987,38 @@ document.getElementById('confirmNoBtn').addEventListener('click', () => {
     hideAllOverlays();
 });
 
-// Initialize Level 1 map & entities for menu background
-loadLevel(1);
-gameState = 'MENU';
-checkLevelSelectUnlock();
-const initialHud = document.getElementById('hud');
-if (initialHud) initialHud.classList.add('hidden');
+// URL Parameter Support for Direct Level Linking (e.g., ?level=6 or ?lvl=6)
+const urlParams = new URLSearchParams(window.location.search);
+const directLevelParam = parseInt(urlParams.get('level') || urlParams.get('lvl'), 10);
+
+if (!isNaN(directLevelParam) && directLevelParam >= 1 && directLevelParam <= 6) {
+    currentLevel = directLevelParam;
+    score = 0;
+    giftsFound = 0;
+    player = null;
+    startTime = Date.now();
+    loadLevel(currentLevel);
+    gameState = 'PLAYING';
+    hideAllOverlays();
+    const directHud = document.getElementById('hud');
+    if (directHud) directHud.classList.remove('hidden');
+    const levelNames = [
+        "Level 1: Birthday Meadow 🌸",
+        "Level 2: Gift Valley 🎁",
+        "Level 3: Goblin Castle 🏰",
+        "Level 4: Cape Coast Beach 🏖️",
+        "Level 5: UCC Exam Halls 📚",
+        "Level 6: Grand Convocation 👑"
+    ];
+    showLevelBanner(levelNames[currentLevel - 1] || `Level ${currentLevel}`);
+} else {
+    // Initialize Level 1 map & entities for menu background
+    loadLevel(1);
+    gameState = 'MENU';
+    checkLevelSelectUnlock();
+    const initialHud = document.getElementById('hud');
+    if (initialHud) initialHud.classList.add('hidden');
+}
 
 // Start loop
 gameLoop();
