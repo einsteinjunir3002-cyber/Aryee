@@ -577,19 +577,28 @@ class Camera {
         this.y = 0;
     }
     update(target) {
+        if (!target) return;
         // Center on target
         this.x = target.x - GAME_WIDTH / 2;
         this.y = target.y - GAME_HEIGHT / 2 + 100;
         
         // Clamp to level bounds
-        if (this.x < 0) this.x = 0;
         const maxScrollX = mapWidth * TILE_SIZE - GAME_WIDTH;
-        if (this.x > maxScrollX) this.x = maxScrollX;
+        if (maxScrollX <= 0) {
+            this.x = (mapWidth * TILE_SIZE - GAME_WIDTH) / 2;
+        } else {
+            if (this.x < 0) this.x = 0;
+            if (this.x > maxScrollX) this.x = maxScrollX;
+        }
         
         // Vertical scroll
-        if (this.y < 0) this.y = 0;
         const maxScrollY = mapHeight * TILE_SIZE - GAME_HEIGHT;
-        if (this.y > maxScrollY) this.y = maxScrollY > 0 ? maxScrollY : 0;
+        if (maxScrollY <= 0) {
+            this.y = 0;
+        } else {
+            if (this.y < 0) this.y = 0;
+            if (this.y > maxScrollY) this.y = maxScrollY;
+        }
     }
 }
 
@@ -1352,7 +1361,7 @@ class Boss {
 
 // --- Globals ---
 let player;
-let camera;
+let camera = new Camera();
 let currentMap = [];
 let mapWidth = 0;
 let mapHeight = 0;
@@ -1447,8 +1456,10 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
 
 function getTile(col, row) {
     if (col < 0 || col >= mapWidth || row < 0 || row >= mapHeight) return 1; // Wall out of bounds
+    if (!currentMap || !currentMap[row]) return 1;
     const char = currentMap[row][col];
-    return parseInt(char, 10);
+    const val = parseInt(char, 10);
+    return isNaN(val) ? 0 : val;
 }
 
 function rectIntersect(r1, r2) {
@@ -1557,6 +1568,8 @@ for (let i = 0; i < 45; i++) {
 }
 
 function drawFloatingConfetti(ctx) {
+    const camX = camera ? camera.x : 0;
+    const camY = camera ? camera.y : 0;
     ctx.save();
     convocationConfetti.forEach(p => {
         p.y += p.speed;
@@ -1565,8 +1578,8 @@ function drawFloatingConfetti(ctx) {
             p.y = -10;
             p.x = Math.random() * 1600;
         }
-        const sx = p.x - camera.x * 0.35;
-        const sy = p.y - camera.y * 0.35;
+        const sx = p.x - camX * 0.35;
+        const sy = p.y - camY * 0.35;
         ctx.save();
         ctx.translate(sx, sy);
         ctx.rotate(p.rot);
@@ -1672,8 +1685,8 @@ function loadLevel(lvlIndex) {
 // --- Main Loop ---
 function update() {
     if (gameState === 'PLAYING') {
-        player.update();
-        camera.update(player);
+        if (player) player.update();
+        if (camera && player) camera.update(player);
         
         enemies.forEach(e => e.update());
         collectibles.forEach(c => c.update());
@@ -1686,6 +1699,9 @@ function update() {
         bosses = bosses.filter(b => b.active);
         birds = birds.filter(b => b.active);
 
+        const camX = camera ? camera.x : 0;
+        const camY = camera ? camera.y : 0;
+
         // Periodically spawn birds & airborne enemies
         birdSpawnTimer++;
         if (currentLevel === 4) {
@@ -1693,9 +1709,9 @@ function update() {
             if (birdSpawnTimer > 210) {
                 birdSpawnTimer = 0;
                 const fromRight = Math.random() > 0.4;
-                const spawnX = fromRight ? camera.x + GAME_WIDTH + 60 : camera.x - 60;
+                const spawnX = fromRight ? camX + GAME_WIDTH + 60 : camX - 60;
                 const dir = fromRight ? -1 : 1;
-                const spawnY = Math.random() * (canvas.height * 0.4) + camera.y + 40;
+                const spawnY = Math.random() * (canvas.height * 0.4) + camY + 40;
                 birds.push(new BirdEnemy(spawnX, spawnY, dir, 2.6 + Math.random() * 1.6, 'seagull'));
             }
         } else if (currentLevel === 5) {
@@ -1703,9 +1719,9 @@ function update() {
             if (birdSpawnTimer > 250) {
                 birdSpawnTimer = 0;
                 const fromRight = Math.random() > 0.5;
-                const spawnX = fromRight ? camera.x + GAME_WIDTH + 60 : camera.x - 60;
+                const spawnX = fromRight ? camX + GAME_WIDTH + 60 : camX - 60;
                 const dir = fromRight ? -1 : 1;
-                const spawnY = Math.random() * (canvas.height * 0.38) + camera.y + 50;
+                const spawnY = Math.random() * (canvas.height * 0.38) + camY + 50;
                 birds.push(new BirdEnemy(spawnX, spawnY, dir, 2.2 + Math.random() * 1.4, 'paper'));
             }
         } else if (currentLevel === 6) {
@@ -1713,9 +1729,9 @@ function update() {
             if (birdSpawnTimer > 230) {
                 birdSpawnTimer = 0;
                 const fromRight = Math.random() > 0.5;
-                const spawnX = fromRight ? camera.x + GAME_WIDTH + 60 : camera.x - 60;
+                const spawnX = fromRight ? camX + GAME_WIDTH + 60 : camX - 60;
                 const dir = fromRight ? -1 : 1;
-                const spawnY = Math.random() * (canvas.height * 0.4) + camera.y + 40;
+                const spawnY = Math.random() * (canvas.height * 0.4) + camY + 40;
                 birds.push(new BirdEnemy(spawnX, spawnY, dir, 2.5 + Math.random() * 1.5, 'mortarboard'));
             }
         }
@@ -1774,7 +1790,7 @@ function update() {
         cutsceneTimer++;
 
         // Smooth camera glide to frame Elizabeth, Cake, and Samuel Bekoe perfectly
-        if (player) {
+        if (player && camera) {
             const focusX = (player.x + cutsceneSamuelX) / 2;
             const focusY = (player.y + cutsceneSamuelY) / 2;
             const maxScrollX = mapWidth * TILE_SIZE - GAME_WIDTH;
@@ -1807,6 +1823,10 @@ function update() {
 function draw() {
     if (gameState === 'MENU' || gameState === 'PLAYING' || gameState === 'PAUSED' || gameState === 'GAMEOVER' || gameState === 'VICTORY' || gameState === 'CUTSCENE') {
         const lvl = levels[currentLevel - 1];
+        if (!lvl) return;
+        
+        const camX = camera ? camera.x : 0;
+        const camY = camera ? camera.y : 0;
         
         // --- Level Themed Backgrounds ---
         if (lvl.theme === 'beach') {
@@ -1820,8 +1840,8 @@ function draw() {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Glowing Tropical Sun
-            const sunX = canvas.width * 0.72 - (camera.x * 0.04);
-            const sunY = 150 - (camera.y * 0.03);
+            const sunX = canvas.width * 0.72 - (camX * 0.04);
+            const sunY = 150 - (camY * 0.03);
             const sunGlow = ctx.createRadialGradient(sunX, sunY, 15, sunX, sunY, 110);
             sunGlow.addColorStop(0, 'rgba(255, 245, 170, 1)');
             sunGlow.addColorStop(0.4, 'rgba(255, 180, 80, 0.65)');
@@ -1832,7 +1852,7 @@ function draw() {
             ctx.fill();
 
             // Ocean Horizon with animated turquoise rolling waves
-            const oceanY = Math.max(160, canvas.height - 230 - (camera.y * 0.12));
+            const oceanY = Math.max(160, canvas.height - 230 - (camY * 0.12));
             const oceanGrad = ctx.createLinearGradient(0, oceanY, 0, canvas.height);
             oceanGrad.addColorStop(0, '#0077b6');
             oceanGrad.addColorStop(0.5, '#0096c7');
@@ -1856,8 +1876,9 @@ function draw() {
 
             // Parallax swaying palm tree silhouettes in background
             ctx.fillStyle = 'rgba(40, 20, 60, 0.45)';
+            const bgPalmWrap = Math.max(1, (mapWidth + 5) * TILE_SIZE);
             for (let i = 0; i < 7; i++) {
-                const px = ((i * 340) - (camera.x * 0.22)) % ((mapWidth + 5) * TILE_SIZE);
+                const px = ((i * 340) - (camX * 0.22)) % bgPalmWrap;
                 if (px > -100 && px < canvas.width + 100) {
                     drawPalmTree(ctx, px, oceanY - 5, 1.15);
                 }
@@ -1872,8 +1893,8 @@ function draw() {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Giant Chalkboard wall in background with UCC graduation & love math
-            const boardX = 80 - (camera.x * 0.18);
-            const boardY = 70 - (camera.y * 0.12);
+            const boardX = 80 - (camX * 0.18);
+            const boardY = 70 - (camY * 0.12);
             ctx.fillStyle = '#1e3d2f';
             ctx.strokeStyle = '#8d5524';
             ctx.lineWidth = 7;
@@ -1900,38 +1921,39 @@ function draw() {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Grand Convocation Banner
-            const bannerX = canvas.width / 2 - (camera.x * 0.05);
+            const bannerX = canvas.width / 2 - (camX * 0.05);
             ctx.fillStyle = '#ffb703';
             ctx.font = 'bold 22px "Fredoka One", sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText("👑 GRAND CONVOCATION & ROYAL CORONATION 👑", bannerX, 55 - (camera.y * 0.05));
+            ctx.fillText("👑 GRAND CONVOCATION & ROYAL CORONATION 👑", bannerX, 55 - (camY * 0.05));
             ctx.fillStyle = '#ffd166';
             ctx.font = '15px "Fredoka One", sans-serif';
-            ctx.fillText("University of Cape Coast • Honoring Queen Elizabeth Aryee", bannerX, 82 - (camera.y * 0.05));
+            ctx.fillText("University of Cape Coast • Honoring Queen Elizabeth Aryee", bannerX, 82 - (camY * 0.05));
             ctx.textAlign = 'left';
 
             // Hanging golden chandeliers
             for (let i = 0; i < 6; i++) {
-                const cx = (i * 300 + 70) - (camera.x * 0.25);
-                drawChandelier(ctx, cx, 12 - (camera.y * 0.08));
+                const cx = (i * 300 + 70) - (camX * 0.25);
+                drawChandelier(ctx, cx, 12 - (camY * 0.08));
             }
 
             // Drifting celebration confetti
             drawFloatingConfetti(ctx);
         } else {
             // Default background for levels 1-3
-            ctx.fillStyle = lvl.bg;
+            ctx.fillStyle = lvl.bg || '#a0e7e5';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Background Clouds
             ctx.fillStyle = 'rgba(255,255,255,0.8)';
             ctx.font = '64px sans-serif';
+            const cloudWrap = Math.max(1, mapWidth * TILE_SIZE);
             for (let i = 0; i < 5; i++) {
-                ctx.fillText('☁️', ((i * 300) - (camera.x * 0.2)) % (mapWidth*TILE_SIZE), 100 + (i%2)*50);
+                ctx.fillText('☁️', ((i * 300) - (camX * 0.2)) % cloudWrap, 100 + (i%2)*50);
             }
         }
         
-        if (!camera) return;
+        if (!currentMap || currentMap.length === 0) return;
 
         ctx.save();
         
@@ -1939,13 +1961,13 @@ function draw() {
         for (let r = 0; r < mapHeight; r++) {
             for (let c = 0; c < mapWidth; c++) {
                 const tile = getTile(c, r);
-                const tileX = c * TILE_SIZE - camera.x;
-                const tileY = r * TILE_SIZE - camera.y;
+                const tileX = c * TILE_SIZE - camX;
+                const tileY = r * TILE_SIZE - camY;
 
                 if (tile === 1) {
                     if (lvl.tileType === 'sand' && sandPattern) {
                         ctx.save();
-                        ctx.translate(-camera.x, -camera.y);
+                        ctx.translate(-camX, -camY);
                         ctx.fillStyle = sandPattern;
                         ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                         if (r === 0 || getTile(c, r - 1) === 0) {
@@ -1957,7 +1979,7 @@ function draw() {
                         ctx.restore();
                     } else if (lvl.tileType === 'books' && booksPattern) {
                         ctx.save();
-                        ctx.translate(-camera.x, -camera.y);
+                        ctx.translate(-camX, -camY);
                         ctx.fillStyle = booksPattern;
                         ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                         if (r === 0 || getTile(c, r - 1) === 0) {
@@ -1969,7 +1991,7 @@ function draw() {
                         ctx.restore();
                     } else if (lvl.tileType === 'carpet' && carpetPattern) {
                         ctx.save();
-                        ctx.translate(-camera.x, -camera.y);
+                        ctx.translate(-camX, -camY);
                         ctx.fillStyle = carpetPattern;
                         ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                         if (r === 0 || getTile(c, r - 1) === 0) {
@@ -2007,20 +2029,20 @@ function draw() {
         }
         
         // Draw Entities
-        collectibles.forEach(c => c.draw(ctx, camera.x, camera.y));
-        enemies.forEach(e => e.draw(ctx, camera.x, camera.y));
-        birds.forEach(b => b.draw(ctx, camera.x, camera.y));
-        bosses.forEach(b => b.draw(ctx, camera.x, camera.y));
+        collectibles.forEach(c => c.draw(ctx, camX, camY));
+        enemies.forEach(e => e.draw(ctx, camX, camY));
+        birds.forEach(b => b.draw(ctx, camX, camY));
+        bosses.forEach(b => b.draw(ctx, camX, camY));
         
         // Projectiles
-        projectiles.forEach(p => p.draw(ctx, camera.x, camera.y));
+        projectiles.forEach(p => p.draw(ctx, camX, camY));
         
         // Player
-        if (player) player.draw(ctx, camera.x, camera.y);
+        if (player) player.draw(ctx, camX, camY);
         
         if (gameState === 'CUTSCENE') {
             ctx.save();
-            ctx.translate(-camera.x, -camera.y);
+            ctx.translate(-camX, -camY);
 
             const cakeX = cutsceneCakeX;
             const cakeY = cutsceneCakeY;
@@ -2096,11 +2118,11 @@ function draw() {
                     let bubbleY = samuelY - bubbleH - 22;
 
                     // Clamping bubble within current camera viewport
-                    const minWorldX = camera.x + 20;
-                    const maxWorldX = camera.x + canvas.width - bubbleW - 20;
+                    const minWorldX = camX + 20;
+                    const maxWorldX = camX + canvas.width - bubbleW - 20;
                     bubbleX = Math.max(minWorldX, Math.min(maxWorldX, bubbleX));
                     
-                    if (bubbleY < camera.y + 15) {
+                    if (bubbleY < camY + 15) {
                         bubbleY = samuelY + 80;
                     }
 
@@ -2168,7 +2190,7 @@ function draw() {
         }
 
         // Draw Particles
-        particles.forEach(p => p.draw(ctx, camera.x, camera.y));
+        particles.forEach(p => p.draw(ctx, camX, camY));
         
         ctx.restore();
 
@@ -2193,16 +2215,20 @@ let lastTime = 0;
 const fpsInterval = 1000 / 60;
 
 function gameLoop(timestamp) {
-    if (!timestamp) timestamp = performance.now();
-    if (!lastTime) lastTime = timestamp;
-    
-    const elapsed = timestamp - lastTime;
-    
-    if (elapsed > fpsInterval) {
-        // Adjust for any minor offset to keep it smooth
-        lastTime = timestamp - (elapsed % fpsInterval);
-        update();
-        draw();
+    try {
+        if (!timestamp) timestamp = performance.now();
+        if (!lastTime) lastTime = timestamp;
+        
+        const elapsed = timestamp - lastTime;
+        
+        if (elapsed > fpsInterval) {
+            // Adjust for any minor offset to keep it smooth
+            lastTime = timestamp - (elapsed % fpsInterval);
+            update();
+            draw();
+        }
+    } catch (err) {
+        console.error("Game loop error:", err);
     }
     
     animationFrameId = requestAnimationFrame(gameLoop);
@@ -2426,6 +2452,12 @@ document.getElementById('confirmNoBtn').addEventListener('click', () => {
     gameState = 'PLAYING';
     hideAllOverlays();
 });
+
+// Initialize Level 1 map & entities for menu background
+loadLevel(1);
+gameState = 'MENU';
+const initialHud = document.getElementById('hud');
+if (initialHud) initialHud.classList.add('hidden');
 
 // Start loop
 gameLoop();
