@@ -104,14 +104,34 @@
         <div id="victoryOverlay" class="overlay hidden">
             <div class="panel victory-panel">
                 <h1 class="rainbow-text">HAPPY BIRTHDAY ELIZABETH! 🎓🎂🎉</h1>
-                <p class="special-message">UCC degree in hand and looking this dangerously fine? 4 years in Cape Coast ain't easy at all, but Queen Lizzy conquered it like absolute royalty! Wishing you endless blessings, high-paying wins, and infinite smiles today and always! 🥂💖</p>
+                
+                <!-- Congratulatory Card from Samuel Bekoe -->
+                <div class="samuel-congrats-card">
+                    <div class="samuel-card-header">
+                        <div class="samuel-avatar-badge">🤵🏾‍♂️</div>
+                        <div class="samuel-header-text">
+                            <h3>Special Congratulations from Samuel Bekoe 💌</h3>
+                            <span class="samuel-subtitle">Your Proud Bestie & Personal Paparazzi</span>
+                        </div>
+                    </div>
+                    <div class="samuel-message-body">
+                        <p>“Queen Lizzy! 🎓 Huge congratulations on conquering the final level and completing Elizabeth's Birthday Quest! More importantly, huge congratulations on bagging that hard-earned UCC degree! 4 solid years in Cape Coast wasn't easy at all, but you conquered it with pure brilliance, beauty, and grace. UCC gave you a certificate, but you gave the whole world a masterclass in looking dangerously fine!</p>
+                        <p>Wishing you infinite blessings, high-paying career moves, soft life, and endless joy today and always! Enjoy your cake, superstar! 🎂🥂💖”</p>
+                        <div class="samuel-signature">— Samuel Bekoe ✨</div>
+                    </div>
+                </div>
+
                 <div class="stats">
-                    <p>You completed Elizabeth's Birthday Adventure!</p>
+                    <p style="font-size: 19px; color: var(--primary); margin-bottom: 8px;">🏆 Elizabeth's Quest: Conquered! 🏆</p>
                     <p>🧁 Cupcakes Collected: <span id="finalCupcakes">0</span></p>
                     <p>🎁 Gifts Found: <span id="finalGifts">0</span>/3</p>
                     <p>⏱️ Play Time: <span id="finalTime">00:00</span></p>
                 </div>
-                <button id="replayBtn" class="btn primary">Play Again</button>
+                
+                <div class="victory-actions">
+                    <button id="replayBtn" class="btn primary">Play Again 🔄</button>
+                    <button id="celebrateBtn" class="btn" onclick="window.location.href='../wish.html'" style="background: linear-gradient(135deg, #ff477e, #ff7096); color: white;">Full Birthday Celebration ✨</button>
+                </div>
             </div>
         </div>
         

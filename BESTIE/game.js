@@ -122,6 +122,9 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') {
         togglePause();
     }
+    if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140 && (e.key === ' ' || e.key === 'Enter')) {
+        triggerVictory();
+    }
 });
 
 window.addEventListener('keyup', (e) => {
@@ -132,10 +135,26 @@ window.addEventListener('keyup', (e) => {
 
 // Mobile Controls
 ['touchstart', 'mousedown'].forEach(evt => {
-    document.getElementById('btnLeft').addEventListener(evt, (e) => { e.preventDefault(); keys.ArrowLeft = true; });
-    document.getElementById('btnRight').addEventListener(evt, (e) => { e.preventDefault(); keys.ArrowRight = true; });
-    document.getElementById('btnJump').addEventListener(evt, (e) => { e.preventDefault(); keys.ArrowUp = true; });
-    document.getElementById('btnShoot').addEventListener(evt, (e) => { e.preventDefault(); keys[" "] = true; });
+    document.getElementById('btnLeft').addEventListener(evt, (e) => { 
+        e.preventDefault(); 
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        keys.ArrowLeft = true; 
+    });
+    document.getElementById('btnRight').addEventListener(evt, (e) => { 
+        e.preventDefault(); 
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        keys.ArrowRight = true; 
+    });
+    document.getElementById('btnJump').addEventListener(evt, (e) => { 
+        e.preventDefault(); 
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        keys.ArrowUp = true; 
+    });
+    document.getElementById('btnShoot').addEventListener(evt, (e) => { 
+        e.preventDefault(); 
+        if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) { triggerVictory(); return; }
+        keys[" "] = true; 
+    });
 });
 
 ['touchend', 'mouseup', 'mouseleave'].forEach(evt => {
@@ -797,7 +816,9 @@ class Boss {
         spawnParticles(this.x + this.w/2, this.y + this.h/2, '#000');
         if (this.hp <= 0) {
             this.active = false;
-            if (bosses.every(b => !b.active)) {
+            spawnParticles(this.x + this.w/2, this.y + this.h/2, '#ffd700');
+            const remainingActive = bosses.filter(b => b.active).length;
+            if (remainingActive === 0 && gameState !== 'CUTSCENE' && gameState !== 'VICTORY') {
                 triggerCutscene();
             }
         }
@@ -832,6 +853,11 @@ let bosses = [];
 let bgmStarted = false;
 let cutsceneTimer = 0;
 let cutscenePhase = 0;
+let cutsceneCakeX = 0;
+let cutsceneCakeY = 0;
+let cutsceneSamuelX = 0;
+let cutsceneSamuelY = 0;
+let victoryInterval = null;
 
 function triggerCutscene() {
     gameState = 'CUTSCENE';
@@ -840,9 +866,71 @@ function triggerCutscene() {
     bosses = [];
     enemies = [];
     collectibles = [];
+    projectiles = []; // Clear boss projectiles so none hit the player!
+
+    if (player) {
+        player.vx = 0;
+        player.vy = 0;
+        player.invulnerable = 99999;
+    }
+
+    // Hide HUD for cinematic cutscene presentation
+    const hudEl = document.getElementById('hud');
+    if (hudEl) hudEl.classList.add('hidden');
+
+    // Smart placement of Cake and Samuel Bekoe near Elizabeth
+    const pX = player ? player.x : 400;
+    const pY = player ? player.y : (mapHeight - 3) * TILE_SIZE;
+
+    // Check if player is near right edge of the level
+    if (pX > (mapWidth * TILE_SIZE) - 340) {
+        cutsceneCakeX = pX - 140;
+        cutsceneSamuelX = cutsceneCakeX - 70;
+        if (player) player.facingRight = false;
+    } else {
+        cutsceneCakeX = pX + 110;
+        cutsceneSamuelX = cutsceneCakeX + 70;
+        if (player) player.facingRight = true;
+    }
+
+    cutsceneCakeX = Math.max(80, Math.min(mapWidth * TILE_SIZE - 180, cutsceneCakeX));
+    cutsceneSamuelX = Math.max(60, Math.min(mapWidth * TILE_SIZE - 120, cutsceneSamuelX));
+
+    // Calculate ground height directly below cutsceneCakeX
+    const col = Math.max(1, Math.min(mapWidth - 2, Math.floor(cutsceneCakeX / TILE_SIZE)));
+    let groundRow = mapHeight - 2;
+    for (let r = Math.max(0, Math.floor(pY / TILE_SIZE)); r < mapHeight; r++) {
+        if (getTile(col, r) === 1) {
+            groundRow = r;
+            break;
+        }
+    }
+    cutsceneCakeY = groundRow * TILE_SIZE - 54;
+    cutsceneSamuelY = groundRow * TILE_SIZE - 68;
+
+    playSound('win');
 }
 
 // --- Helper Functions ---
+function drawRoundedRect(ctx, x, y, w, h, r) {
+    if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, r);
+    } else {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+}
+
 function getTile(col, row) {
     if (col < 0 || col >= mapWidth || row < 0 || row >= mapHeight) return 1; // Wall out of bounds
     const char = currentMap[row][col];
@@ -976,13 +1064,33 @@ function update() {
         particles = particles.filter(p => p.life > 0);
     } else if (gameState === 'CUTSCENE') {
         cutsceneTimer++;
-        if (cutscenePhase === 0 && cutsceneTimer > 60) {
+
+        // Smooth camera glide to frame Elizabeth, Cake, and Samuel Bekoe perfectly
+        if (player) {
+            const focusX = (player.x + cutsceneSamuelX) / 2;
+            const focusY = (player.y + cutsceneSamuelY) / 2;
+            const maxScrollX = mapWidth * TILE_SIZE - GAME_WIDTH;
+            const targetCamX = Math.max(0, Math.min(Math.max(0, maxScrollX), focusX - GAME_WIDTH / 2));
+            const maxScrollY = mapHeight * TILE_SIZE - GAME_HEIGHT;
+            const targetCamY = Math.max(0, Math.min(Math.max(0, maxScrollY), focusY - GAME_HEIGHT / 2 + 30));
+            camera.x += (targetCamX - camera.x) * 0.08;
+            camera.y += (targetCamY - camera.y) * 0.08;
+        }
+
+        if (cutscenePhase === 0 && cutsceneTimer > 45) {
             cutscenePhase = 1;
-        } else if (cutscenePhase === 1 && cutsceneTimer > 180) {
+            spawnParticles(cutsceneSamuelX, cutsceneSamuelY + 20, '#4a90e2');
+            spawnParticles(cutsceneSamuelX, cutsceneSamuelY + 20, '#ffd700');
+        } else if (cutscenePhase === 1 && cutsceneTimer > 110) {
             cutscenePhase = 2;
-        } else if (cutscenePhase === 2 && cutsceneTimer > 540) {
+            spawnParticles(cutsceneCakeX + 32, cutsceneCakeY, '#ff7096');
+        } else if (cutscenePhase === 2 && cutsceneTimer > 800) { // ~13.5s auto-advance
             triggerVictory();
         }
+
+        // Keep updating particles during cutscene
+        particles.forEach(p => p.update());
+        particles = particles.filter(p => p.life > 0);
     }
     // Level banner countdown
     if (levelBannerTimer > 0) levelBannerTimer--;
@@ -1046,17 +1154,23 @@ function draw() {
             ctx.save();
             ctx.translate(-camera.x, -camera.y);
 
-            const cakeX = player.x + 200;
-            const cakeY = (mapHeight - 3) * TILE_SIZE - 64; // On floor
+            const cakeX = cutsceneCakeX;
+            const cakeY = cutsceneCakeY;
+
+            // Sparkles around cake
+            if (cutsceneTimer % 12 === 0) {
+                spawnParticles(cakeX + 32, cakeY + 20, '#ffd700');
+            }
 
             // Draw Cake
             ctx.font = '64px sans-serif';
             ctx.fillText('🎂', cakeX, cakeY + 50);
 
             if (cutscenePhase >= 1) {
-                // Draw Samuel Bekoe popping out
-                const samuelX = cakeX + 80;
-                const samuelY = cakeY - 20;
+                // Draw Samuel Bekoe popping out with a celebratory bounce
+                const bobbing = Math.sin(cutsceneTimer * 0.12) * 3;
+                const samuelX = cutsceneSamuelX;
+                const samuelY = cutsceneSamuelY + bobbing;
 
                 // Samuel Body
                 ctx.fillStyle = '#4a90e2'; // Blue shirt
@@ -1073,43 +1187,113 @@ function draw() {
                 ctx.arc(samuelX, samuelY + 20, 15, 0, Math.PI * 2);
                 ctx.fill();
 
+                // Friendly Eyes & Smile
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(samuelX - 5, samuelY + 18, 2.5, 0, Math.PI * 2);
+                ctx.arc(samuelX + 5, samuelY + 18, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(samuelX - 5, samuelY + 18, 1.2, 0, Math.PI * 2);
+                ctx.arc(samuelX + 5, samuelY + 18, 1.2, 0, Math.PI * 2);
+                ctx.fill();
+
                 // Hair
-                ctx.fillStyle = '#000'; // Black hair
+                ctx.fillStyle = '#000000'; // Black hair
                 ctx.beginPath();
                 ctx.arc(samuelX, samuelY + 15, 16, Math.PI, 0);
                 ctx.fill();
 
+                // Waving hand
+                ctx.fillStyle = '#8d5524';
+                ctx.beginPath();
+                const waveArm = Math.sin(cutsceneTimer * 0.18) * 8;
+                ctx.arc(samuelX + 22, samuelY + 28 + waveArm, 6, 0, Math.PI * 2);
+                ctx.fill();
+
                 // Name tag
-                ctx.fillStyle = '#000';
-                ctx.font = 'bold 16px sans-serif';
-                ctx.fillText('Samuel Bekoe', samuelX - 50, samuelY - 5);
+                ctx.fillStyle = '#ff477e';
+                ctx.font = 'bold 16px "Fredoka One", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('⭐ Samuel Bekoe ⭐', samuelX, samuelY - 8);
+                ctx.textAlign = 'left';
 
                 if (cutscenePhase >= 2) {
-                    // Chat Bubble
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(samuelX - 220, samuelY - 120, 260, 110);
-                    ctx.strokeStyle = 'black';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(samuelX - 220, samuelY - 120, 260, 110);
+                    // Chat Bubble - Clamped safely inside visible screen view!
+                    const bubbleW = Math.min(300, canvas.width - 40);
+                    const bubbleH = 142;
+                    
+                    let bubbleX = samuelX - bubbleW / 2;
+                    let bubbleY = samuelY - bubbleH - 22;
 
-                    // Bubble tail
-                    ctx.beginPath();
-                    ctx.moveTo(samuelX - 20, samuelY - 10);
-                    ctx.lineTo(samuelX, samuelY + 10);
-                    ctx.lineTo(samuelX - 10, samuelY - 10);
-                    ctx.fillStyle = 'white';
+                    // Clamping bubble within current camera viewport
+                    const minWorldX = camera.x + 20;
+                    const maxWorldX = camera.x + canvas.width - bubbleW - 20;
+                    bubbleX = Math.max(minWorldX, Math.min(maxWorldX, bubbleX));
+                    
+                    if (bubbleY < camera.y + 15) {
+                        bubbleY = samuelY + 80;
+                    }
+
+                    // Shadow
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                    drawRoundedRect(ctx, bubbleX + 4, bubbleY + 4, bubbleW, bubbleH, 14);
+                    ctx.fill();
+
+                    // Bubble body
+                    ctx.fillStyle = '#ffffff';
+                    ctx.strokeStyle = '#ff7096';
+                    ctx.lineWidth = 3;
+                    drawRoundedRect(ctx, bubbleX, bubbleY, bubbleW, bubbleH, 14);
                     ctx.fill();
                     ctx.stroke();
-                    
-                    // Hide the overlapping stroke on tail
-                    ctx.fillRect(samuelX - 18, samuelY - 12, 6, 4);
 
-                    ctx.fillStyle = 'black';
-                    ctx.font = '14px sans-serif';
-                    ctx.fillText('Happy Birthday Elizabeth! 🎉', samuelX - 210, samuelY - 80);
-                    ctx.fillText('Congrats on the UCC degree! 🎓', samuelX - 210, samuelY - 55);
-                    ctx.fillText('Hottest graduate in Ghana! 🔥', samuelX - 210, samuelY - 35);
-                    ctx.fillText('Enjoy your cake, Lizzy! 🎂', samuelX - 210, samuelY - 15);
+                    // Bubble tail pointing towards Samuel
+                    const tailX = Math.max(bubbleX + 24, Math.min(bubbleX + bubbleW - 24, samuelX));
+                    ctx.beginPath();
+                    if (bubbleY < samuelY) {
+                        ctx.moveTo(tailX - 10, bubbleY + bubbleH);
+                        ctx.lineTo(samuelX, samuelY - 4);
+                        ctx.lineTo(tailX + 10, bubbleY + bubbleH);
+                    } else {
+                        ctx.moveTo(tailX - 10, bubbleY);
+                        ctx.lineTo(samuelX, samuelY + 75);
+                        ctx.lineTo(tailX + 10, bubbleY);
+                    }
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Hide tail inner stroke overlap
+                    ctx.fillStyle = '#ffffff';
+                    if (bubbleY < samuelY) {
+                        ctx.fillRect(tailX - 9, bubbleY + bubbleH - 3, 18, 6);
+                    } else {
+                        ctx.fillRect(tailX - 9, bubbleY - 3, 18, 6);
+                    }
+
+                    // Message Header
+                    ctx.fillStyle = '#ff477e';
+                    ctx.font = 'bold 15px "Fredoka One", sans-serif';
+                    ctx.fillText('💌 Samuel Bekoe says:', bubbleX + 16, bubbleY + 25);
+
+                    // Message Lines
+                    ctx.fillStyle = '#222222';
+                    ctx.font = 'bold 13px sans-serif';
+                    ctx.fillText('Happy Birthday Elizabeth! 🎉🎂', bubbleX + 16, bubbleY + 50);
+                    ctx.font = '13px sans-serif';
+                    ctx.fillText('Congrats on bagging your UCC degree! 🎓', bubbleX + 16, bubbleY + 70);
+                    ctx.fillText('The hottest & smartest graduate in Ghana! 🔥', bubbleX + 16, bubbleY + 90);
+                    ctx.fillText('Enjoy your cake & soft life, Queen Lizzy! ✨', bubbleX + 16, bubbleY + 110);
+
+                    // Skip prompt (pulsing)
+                    const pulseAlpha = 0.5 + 0.5 * Math.sin(cutsceneTimer * 0.12);
+                    ctx.fillStyle = `rgba(255, 71, 126, ${pulseAlpha})`;
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('[Tap / Press Space to continue ⏩]', bubbleX + bubbleW - 14, bubbleY + 130);
+                    ctx.textAlign = 'left';
                 }
             }
             ctx.restore();
@@ -1168,6 +1352,10 @@ function showOverlay(id) {
 }
 
 function startGame() {
+    if (victoryInterval) {
+        clearInterval(victoryInterval);
+        victoryInterval = null;
+    }
     if (!bgmStarted) {
         bgm.play().catch(e => console.log('Audio play prevented by browser'));
         bgmStarted = true;
@@ -1278,7 +1466,8 @@ function showLevelBanner(text) {
 function triggerVictory() {
     gameState = 'VICTORY';
     playSound('win');
-    document.getElementById('hud').classList.add('hidden');
+    const hudEl = document.getElementById('hud');
+    if (hudEl) hudEl.classList.add('hidden');
     
     const timeSecs = Math.floor((Date.now() - startTime) / 1000);
     const m = Math.floor(timeSecs / 60).toString().padStart(2, '0');
@@ -1289,18 +1478,26 @@ function triggerVictory() {
     document.getElementById('finalTime').innerText = `${m}:${s}`;
     
     // Fireworks effect on canvas
-    setInterval(() => {
+    if (victoryInterval) clearInterval(victoryInterval);
+    victoryInterval = setInterval(() => {
         if (gameState === 'VICTORY') {
             const x = Math.random() * canvas.width + camera.x;
             const y = Math.random() * (canvas.height/2) + camera.y;
-            const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00'];
+            const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00', '#ff7096'];
             const color = colors[Math.floor(Math.random()*colors.length)];
             spawnParticles(x, y, color);
         }
-    }, 500);
+    }, 350);
 
     showOverlay('victoryOverlay');
 }
+
+// Canvas tap/click to advance cutscene
+canvas.addEventListener('click', () => {
+    if (gameState === 'CUTSCENE' && cutscenePhase >= 2 && cutsceneTimer > 140) {
+        triggerVictory();
+    }
+});
 
 // --- Event Listeners ---
 document.getElementById('startBtn').addEventListener('click', startGame);
