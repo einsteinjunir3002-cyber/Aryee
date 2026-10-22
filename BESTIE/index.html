@@ -41,9 +41,26 @@
                 <h1 class="bounce-text">Elizabeth's Quest 🎓🎂</h1>
                 <p>Avoid obstacles to collect birthday cupcakes & gifts for UCC's finest graduate!</p>
                 <button id="startBtn" class="btn primary">Start Adventure</button>
+                <button id="levelSelectBtn" class="btn" style="background: linear-gradient(135deg, #7209b7, #4361ee); color: white; display: none;">Select Level 🗺️</button>
                 <button id="instructionsBtn" class="btn">Instructions</button>
                 <button id="creditsBtn" class="btn">Credits</button>
                 <button id="homeBtn" class="btn" onclick="window.location.href='../index.html'" style="margin-top: 15px; background: #999;">Back to Home</button>
+            </div>
+        </div>
+
+        <div id="levelSelectOverlay" class="overlay hidden">
+            <div class="panel level-select-panel">
+                <h2 style="color: #4361ee;">Select Starting Level 🗺️</h2>
+                <p style="color: #555; font-size: 14.5px; margin-bottom: 16px;">Elizabeth's Quest Conquered! Pick any level to replay:</p>
+                <div class="level-select-grid">
+                    <button class="level-choice-btn" data-level="1">🌸 Level 1: Birthday Meadow</button>
+                    <button class="level-choice-btn" data-level="2">🎁 Level 2: Gift Valley</button>
+                    <button class="level-choice-btn" data-level="3">🏰 Level 3: Goblin Castle</button>
+                    <button class="level-choice-btn" data-level="4">🏖️ Level 4: Cape Coast Beach</button>
+                    <button class="level-choice-btn" data-level="5">📚 Level 5: UCC Exam Halls</button>
+                    <button class="level-choice-btn" data-level="6">👑 Level 6: Convocation & Krakens</button>
+                </div>
+                <button id="backFromLevelSelectBtn" class="btn" style="margin-top: 16px;">Back to Menu</button>
             </div>
         </div>
 

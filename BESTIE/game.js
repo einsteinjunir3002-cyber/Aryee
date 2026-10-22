@@ -53,6 +53,10 @@ let score = 0;
 let giftsFound = 0;
 let timeElapsed = 0;
 let startTime = 0;
+let isBonusRound = false;
+let bonusRoundTimer = 0;
+const BONUS_ROUND_DURATION = 300; // 5 seconds at 60fps
+
 
 const giftData = [
     // 1. WhatsApp Image 2026-10-20 at 8.34.26 AM.jpeg (Red Carpet Queen)
@@ -1106,7 +1110,14 @@ class Collectible {
             showOverlay('confirmOverlay');
         } else {
             this.active = false;
-            if (this.type === 'cupcake') {
+            if (this.type === 'bonus_cupcake') {
+                score++;
+                player.hp++; // Each bonus cupcake directly grants +1 health!
+                playSound('collect');
+                spawnParticles(this.x, this.y, '#ffd700');
+                spawnParticles(this.x, this.y, '#ff477e');
+                updateHUD();
+            } else if (this.type === 'cupcake') {
                 score++;
                 if (score > 0 && score % 2 === 0) {
                     player.hp++; // Grant an extra life every 2 cupcakes indefinitely
@@ -1131,7 +1142,12 @@ class Collectible {
         ctx.translate(this.x - camX, this.y - camY + yOffset);
         
         ctx.font = '32px sans-serif';
-        if (this.type === 'cupcake') ctx.fillText('🧁', 0, 30);
+        if (this.type === 'bonus_cupcake') {
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 14;
+            ctx.fillText('🧁', 0, 30);
+            ctx.shadowBlur = 0;
+        } else if (this.type === 'cupcake') ctx.fillText('🧁', 0, 30);
         else if (this.type === 'gift') ctx.fillText('🎁', 0, 30);
         else if (this.type === 'portal') {
             // Draw glowing door
@@ -1211,15 +1227,33 @@ class Projectile {
 
 // Boss class
 class Boss {
-    constructor(x, y, bossType = 'goblin') {
+    constructor(x, y, bossType = 'goblin', subType = null) {
         this.x = x;
         this.y = y;
-        this.bossType = bossType; // 'goblin' or 'titan'
-        this.w = bossType === 'titan' ? 72 : 64;
-        this.h = bossType === 'titan' ? 72 : 64;
-        this.hp = bossType === 'titan' ? 14 : 10;
-        this.maxHp = this.hp;
-        this.vx = bossType === 'titan' ? 2.5 : 2;
+        this.bossType = bossType; // 'goblin', 'titan', or 'kraken'
+        this.subType = subType; // 'kraken_left', 'kraken_center', 'kraken_right'
+        if (bossType === 'kraken') {
+            this.w = 84;
+            this.h = 84;
+            this.hp = 12;
+            this.maxHp = 12;
+            this.vx = subType === 'kraken_left' ? 2.4 : (subType === 'kraken_center' ? 3.0 : 2.6);
+            this.title = subType === 'kraken_left' ? "⚔️ KRAKEN LEVIATHAN ⚔️" : (subType === 'kraken_center' ? "👑 ANCIENT KRAKEN BEHEMOTH 👑" : "⚡ ABYSSAL VOID KRAKEN ⚡");
+        } else if (bossType === 'titan') {
+            this.w = 72;
+            this.h = 72;
+            this.hp = 14;
+            this.maxHp = 14;
+            this.vx = 2.5;
+            this.title = "EXAM PRESSURE TITAN";
+        } else {
+            this.w = 64;
+            this.h = 64;
+            this.hp = 10;
+            this.maxHp = 10;
+            this.vx = 2;
+            this.title = "GOBLIN CHIEF";
+        }
         this.vy = 0;
         this.active = true;
         this.state = 'patrol';
@@ -1231,33 +1265,86 @@ class Boss {
         
         if (this.state === 'patrol') {
             this.x += this.vx;
-            if (this.x < player.x - 450 || this.x > player.x + 450 || this.x < 100 || this.x > (mapWidth - 3) * TILE_SIZE) {
-                this.vx *= -1;
+            
+            if (this.bossType === 'kraken') {
+                let minX = 60;
+                let maxX = (mapWidth - 3) * TILE_SIZE;
+                if (this.subType === 'kraken_left') {
+                    minX = 60;
+                    maxX = 650;
+                } else if (this.subType === 'kraken_center') {
+                    minX = 480;
+                    maxX = 1120;
+                } else if (this.subType === 'kraken_right') {
+                    minX = 950;
+                    maxX = 1530;
+                }
+                if (this.x < minX || this.x > maxX) {
+                    this.vx *= -1;
+                }
+            } else {
+                if (this.x < player.x - 450 || this.x > player.x + 450 || this.x < 100 || this.x > (mapWidth - 3) * TILE_SIZE) {
+                    this.vx *= -1;
+                }
             }
             
             // Shooting cadence
-            const interval = this.bossType === 'titan' ? (this.hp <= 7 ? 65 : 90) : 120;
-            if (this.timer % interval === 0) {
-                const dx = player.x - this.x;
-                const dy = player.y - this.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist > 0) {
-                    const speed = this.bossType === 'titan' ? 7 : 6;
-                    const vx = (dx / dist) * speed;
-                    const vy = (dy / dist) * speed;
-                    const color = this.bossType === 'titan' ? '#00f5d4' : 'red';
-                    projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy, false, color, 7));
-                    if (this.bossType === 'titan' && this.hp <= 7) {
-                        // Enraged titan shoots double bolt
-                        projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy - 2, false, '#ffd166', 6));
+            if (this.bossType === 'kraken') {
+                const offset = this.subType === 'kraken_left' ? 0 : (this.subType === 'kraken_center' ? 35 : 70);
+                const isEnraged = this.hp <= 6;
+                const interval = isEnraged ? 70 : 100;
+                if ((this.timer + offset) % interval === 0) {
+                    const dx = player.x - this.x;
+                    const dy = player.y - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist > 0) {
+                        const speed = 7.5;
+                        const vx = (dx / dist) * speed;
+                        const vy = (dy / dist) * speed;
+                        projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy, false, '#00f5d4', 8));
+                        if (isEnraged) {
+                            // Enraged kraken fires dual shadow bolts
+                            projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy - 2.5, false, '#ff0055', 7));
+                        }
+                    }
+                }
+            } else if (this.bossType === 'titan') {
+                const interval = this.hp <= 7 ? 65 : 90;
+                if (this.timer % interval === 0) {
+                    const dx = player.x - this.x;
+                    const dy = player.y - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist > 0) {
+                        const speed = 7;
+                        const vx = (dx / dist) * speed;
+                        const vy = (dy / dist) * speed;
+                        projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy, false, '#00f5d4', 7));
+                        if (this.hp <= 7) {
+                            projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, vx, vy - 2, false, '#ffd166', 6));
+                        }
+                    }
+                }
+            } else {
+                if (this.timer % 120 === 0) {
+                    const dx = player.x - this.x;
+                    const dy = player.y - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist > 0) {
+                        projectiles.push(new Projectile(this.x + this.w/2, this.y + this.h/2, (dx / dist) * 6, (dy / dist) * 6, false, 'red', 7));
                     }
                 }
             }
 
-            const jumpInterval = this.bossType === 'titan' ? (this.hp <= 7 ? 80 : 110) : 120;
+            // Jumping cadence
+            let jumpInterval = 120;
+            if (this.bossType === 'kraken') {
+                jumpInterval = this.hp <= 6 ? 90 : 130;
+            } else if (this.bossType === 'titan') {
+                jumpInterval = this.hp <= 7 ? 80 : 110;
+            }
             if (this.timer > jumpInterval && Math.random() > 0.45) {
                 this.state = 'jump';
-                this.vy = this.bossType === 'titan' ? -14 : -12;
+                this.vy = this.bossType === 'kraken' ? -15 : (this.bossType === 'titan' ? -14 : -12);
                 this.timer = 0;
             }
         } else if (this.state === 'jump') {
@@ -1270,7 +1357,10 @@ class Boss {
                 this.vy = 0;
                 this.state = 'patrol';
                 this.timer = 0;
-                if (this.bossType === 'titan') {
+                if (this.bossType === 'kraken') {
+                    spawnParticles(this.x + this.w/2, floorY + this.h, '#00f5d4');
+                    spawnParticles(this.x + this.w/2, floorY + this.h, '#ff0055');
+                } else if (this.bossType === 'titan') {
                     spawnParticles(this.x + this.w/2, floorY + this.h, '#9b5de5');
                     spawnParticles(this.x + this.w/2, floorY + this.h, '#ffd700');
                 }
@@ -1291,16 +1381,22 @@ class Boss {
     takeDamage() {
         this.hp--;
         playSound('hurt');
-        const pColor = this.bossType === 'titan' ? '#9b5de5' : '#000';
+        const pColor = this.bossType === 'kraken' ? '#00f5d4' : (this.bossType === 'titan' ? '#9b5de5' : '#000');
         spawnParticles(this.x + this.w/2, this.y + this.h/2, pColor);
         if (this.hp <= 0) {
             this.active = false;
             spawnParticles(this.x + this.w/2, this.y + this.h/2, '#ffd700');
             spawnParticles(this.x + this.w/2, this.y + this.h/2, '#ff477e');
+            
+            // In Level 6, defeating the Exam Pressure Titan transitions to the 5-second Cupcake Rush bonus round!
+            if (currentLevel === 6 && this.bossType === 'titan') {
+                startBonusRound();
+                return;
+            }
+
             const remainingActive = bosses.filter(b => b.active).length;
             if (remainingActive === 0 && gameState !== 'CUTSCENE' && gameState !== 'VICTORY') {
                 if (currentLevel === 3) {
-                    // Level 3 Boss defeated! Immediately launch Samuel Bekoe celebration cutscene & congratulatory card
                     showLevelBanner(`Castle Conquered! 🎉`);
                     triggerCutscene();
                 } else if (currentLevel < levels.length) {
@@ -1309,7 +1405,10 @@ class Boss {
                     collectibles.push(new Collectible(portalX, (mapHeight - 3) * TILE_SIZE, 'portal'));
                     playSound('win');
                 } else {
-                    // Level 6 Boss defeated!
+                    // All 3 Kraken Titans defeated in Level 6!
+                    localStorage.setItem('lizzyGameCompleted', 'true');
+                    checkLevelSelectUnlock();
+                    showLevelBanner(`👑 3 KRAKEN TITANS DEFEATED! 👑`);
                     triggerCutscene();
                 }
             }
@@ -1320,7 +1419,176 @@ class Boss {
         ctx.save();
         ctx.translate(this.x - camX, this.y - camY);
 
-        if (this.bossType === 'titan') {
+        if (this.bossType === 'kraken') {
+            // --- SCARY & POWERFUL KRAKEN FROM CLASH OF THE TITANS ---
+            const pulse = Math.sin(this.timer * 0.12) * 8;
+            const isEnraged = this.hp <= 6;
+            ctx.shadowColor = isEnraged ? '#ff0055' : '#00f5d4';
+            ctx.shadowBlur = 18 + pulse;
+
+            // 1. Writhing Tentacles (6 huge sinusoidal serpentine tentacles with suction discs)
+            const tentacleBaseY = this.h * 0.72;
+            const tentacleOffsets = [-36, -22, -8, 8, 22, 36];
+            for (let t = 0; t < tentacleOffsets.length; t++) {
+                const offX = tentacleOffsets[t];
+                const wave = Math.sin(this.timer * 0.1 + t * 1.1) * 14;
+                const tipX = this.w / 2 + offX + wave;
+                const tipY = this.h + 20 + Math.cos(this.timer * 0.08 + t) * 8;
+                
+                // Outer thick muscular tentacle
+                ctx.beginPath();
+                ctx.moveTo(this.w / 2 + offX * 0.6, tentacleBaseY);
+                ctx.quadraticCurveTo(this.w / 2 + offX * 1.2 + wave * 0.6, this.h * 0.88, tipX, tipY);
+                ctx.lineWidth = 9;
+                ctx.strokeStyle = isEnraged ? '#2d0a21' : '#14312b';
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // Inner flesh/energy ridge
+                ctx.beginPath();
+                ctx.moveTo(this.w / 2 + offX * 0.6, tentacleBaseY);
+                ctx.quadraticCurveTo(this.w / 2 + offX * 1.2 + wave * 0.6, this.h * 0.88, tipX, tipY);
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = isEnraged ? '#ff007f' : '#00f5d4';
+                ctx.stroke();
+
+                // Glowing sucker disk
+                const suckerX = (this.w / 2 + offX * 0.6 + tipX) / 2;
+                const suckerY = (tentacleBaseY + tipY) / 2;
+                ctx.beginPath();
+                ctx.arc(suckerX, suckerY, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffd700';
+                ctx.fill();
+            }
+
+            // 2. Heavy Carapace & Torso (Ancient Craggy Stone/Chitin Armor)
+            const bodyGrad = ctx.createLinearGradient(0, 0, 0, this.h);
+            if (isEnraged) {
+                bodyGrad.addColorStop(0, '#3a0928');
+                bodyGrad.addColorStop(0.5, '#200516');
+                bodyGrad.addColorStop(1, '#0e020a');
+            } else {
+                bodyGrad.addColorStop(0, '#1a332d');
+                bodyGrad.addColorStop(0.5, '#0e201b');
+                bodyGrad.addColorStop(1, '#05100d');
+            }
+            ctx.fillStyle = bodyGrad;
+            ctx.beginPath();
+            ctx.ellipse(this.w / 2, this.h * 0.52, this.w * 0.44, this.h * 0.42, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = isEnraged ? '#ff0055' : '#00b4d8';
+            ctx.stroke();
+
+            // Dorsal carapace ridges & spikes
+            ctx.fillStyle = isEnraged ? '#55083a' : '#1e3d36';
+            for (let s = -2; s <= 2; s++) {
+                const spikeX = this.w / 2 + s * 14;
+                const spikeY = this.h * 0.18 - Math.abs(s) * 4;
+                ctx.beginPath();
+                ctx.moveTo(spikeX - 7, spikeY + 12);
+                ctx.lineTo(spikeX, spikeY - 14 - Math.abs(s) * 2);
+                ctx.lineTo(spikeX + 7, spikeY + 12);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = isEnraged ? '#ff477e' : '#52b788';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+
+            // 3. Monstrous Gaping Maw with Razor Fangs
+            ctx.fillStyle = '#060a09';
+            ctx.beginPath();
+            ctx.ellipse(this.w / 2, this.h * 0.64, this.w * 0.28, this.h * 0.16, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = isEnraged ? '#990033' : '#0d4036';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Razor-sharp fangs
+            ctx.fillStyle = '#e8f0ec';
+            for (let f = -3; f <= 3; f++) {
+                const fangX = this.w / 2 + f * 6.5;
+                // Upper fangs
+                ctx.beginPath();
+                ctx.moveTo(fangX - 2.5, this.h * 0.54);
+                ctx.lineTo(fangX, this.h * 0.62);
+                ctx.lineTo(fangX + 2.5, this.h * 0.54);
+                ctx.closePath();
+                ctx.fill();
+                // Lower fangs
+                ctx.beginPath();
+                ctx.moveTo(fangX - 2.5, this.h * 0.74);
+                ctx.lineTo(fangX, this.h * 0.66);
+                ctx.lineTo(fangX + 2.5, this.h * 0.74);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // 4. Glowing Demonic Eyes with Slit Pupils
+            const eyeY = this.h * 0.38;
+            const eyeSpacing = 16;
+            for (let side of [-1, 1]) {
+                const eyeX = this.w / 2 + side * eyeSpacing;
+                // Heavy bony brow ridge
+                ctx.beginPath();
+                ctx.moveTo(eyeX - 10, eyeY - 7);
+                ctx.lineTo(eyeX + 10, eyeY - (side * 2));
+                ctx.strokeStyle = '#05100d';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Glowing eye socket
+                ctx.fillStyle = isEnraged ? '#ff0033' : '#ffd700';
+                ctx.beginPath();
+                ctx.ellipse(eyeX, eyeY, 8, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Demonic vertical slit pupil
+                ctx.fillStyle = '#050706';
+                ctx.beginPath();
+                ctx.ellipse(eyeX, eyeY, 2.2, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Specular reflection
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(eyeX - 1.5, eyeY - 2, 2, 2);
+            }
+
+            ctx.shadowBlur = 0;
+
+            // 5. Boss Title & Enraged Indicator
+            ctx.fillStyle = isEnraged ? '#ff0055' : '#00f5d4';
+            ctx.font = 'bold 10px "Fredoka One", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(this.title || 'KRAKEN TITAN', this.w / 2, -26);
+            if (isEnraged) {
+                ctx.fillStyle = '#ffd166';
+                ctx.font = 'bold 9px "Fredoka One", sans-serif';
+                ctx.fillText('⚡ ABYSSAL FURY ⚡', this.w / 2, -37);
+            }
+
+            // 6. Glowing Boss Health Bar
+            const barW = this.w + 16;
+            const barX = -8;
+            const barY = -16;
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(barX, barY, barW, 8);
+            const hpGrad = ctx.createLinearGradient(barX, 0, barX + barW, 0);
+            if (isEnraged) {
+                hpGrad.addColorStop(0, '#ff0055');
+                hpGrad.addColorStop(1, '#ff9e00');
+            } else {
+                hpGrad.addColorStop(0, '#00f5d4');
+                hpGrad.addColorStop(1, '#4361ee');
+            }
+            ctx.fillStyle = hpGrad;
+            ctx.fillRect(barX, barY, barW * Math.max(0, this.hp / this.maxHp), 8);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(barX, barY, barW, 8);
+
+        } else if (this.bossType === 'titan') {
             // Exam Pressure Titan
             const auraPulse = Math.sin(this.timer * 0.1) * 6;
             ctx.shadowColor = this.hp <= 7 ? '#ff0055' : '#9b5de5';
@@ -1363,6 +1631,68 @@ class Boss {
         ctx.restore();
     }
 }
+
+// --- Bonus Round & Kraken Spawning Logic ---
+function startBonusRound() {
+    isBonusRound = true;
+    bonusRoundTimer = 300; // 5 seconds at 60fps
+    projectiles = []; // Clear dangerous projectiles so player can rush safely
+    
+    // Spawn 40 bonus cupcakes all across the Grand Hall!
+    const spawnLocations = [];
+    
+    // Floor level cupcakes (row 17, along x coordinates from 3 to 38)
+    for (let c = 3; c <= 38; c += 2) {
+        spawnLocations.push({ x: c * TILE_SIZE, y: 17 * TILE_SIZE });
+    }
+    // Red carpet stairs and platforms
+    // Row 14 platform
+    for (let c = 3; c <= 7; c++) spawnLocations.push({ x: c * TILE_SIZE, y: 13 * TILE_SIZE });
+    // Row 12 platform
+    for (let c = 8; c <= 13; c++) spawnLocations.push({ x: c * TILE_SIZE, y: 11 * TILE_SIZE });
+    // Row 10 platform
+    for (let c = 18; c <= 24; c++) spawnLocations.push({ x: c * TILE_SIZE, y: 9 * TILE_SIZE });
+    // Row 7 balcony
+    for (let c = 31; c <= 37; c++) spawnLocations.push({ x: c * TILE_SIZE, y: 6 * TILE_SIZE });
+    // Floating air cupcakes in the center
+    for (let c = 12; c <= 28; c += 3) {
+        spawnLocations.push({ x: c * TILE_SIZE, y: 15 * TILE_SIZE });
+        spawnLocations.push({ x: c * TILE_SIZE, y: 14 * TILE_SIZE });
+    }
+
+    spawnLocations.forEach(loc => {
+        collectibles.push(new Collectible(loc.x, loc.y, 'bonus_cupcake'));
+    });
+
+    playSound('win');
+    showLevelBanner("🧁 CUPCAKE RUSH: 5 SECONDS! 🧁");
+}
+
+function endBonusRoundAndSpawnKrakens() {
+    isBonusRound = false;
+    bonusRoundTimer = 0;
+    
+    // Transform any uncollected bonus cupcakes into golden particles
+    collectibles = collectibles.filter(c => {
+        if (c.type === 'bonus_cupcake') {
+            spawnParticles(c.x, c.y, '#ffd700');
+            return false;
+        }
+        return true;
+    });
+
+    playSound('hurt');
+    showLevelBanner("⚠️ 3 KRAKEN TITANS AWAKENED! 🐙⚠️");
+    
+    // Spawn the 3 Kraken bosses across the hall
+    const floorY = (mapHeight - 3) * TILE_SIZE - 40;
+    bosses = [
+        new Boss(220, floorY, 'kraken', 'kraken_left'),
+        new Boss(780, floorY, 'kraken', 'kraken_center'),
+        new Boss(1340, floorY, 'kraken', 'kraken_right')
+    ];
+}
+
 
 // --- Globals ---
 let player;
@@ -1609,6 +1939,8 @@ function loadLevel(lvlIndex) {
     bosses = [];
     birds = [];
     birdSpawnTimer = 0;
+    isBonusRound = false;
+    bonusRoundTimer = 0;
     
     for (let r = 0; r < mapHeight; r++) {
         for (let c = 0; c < mapWidth; c++) {
@@ -1690,6 +2022,13 @@ function loadLevel(lvlIndex) {
 // --- Main Loop ---
 function update() {
     if (gameState === 'PLAYING') {
+        if (isBonusRound) {
+            bonusRoundTimer--;
+            if (bonusRoundTimer <= 0) {
+                endBonusRoundAndSpawnKrakens();
+            }
+        }
+
         if (player) player.update();
         if (camera && player) camera.update(player);
         
@@ -2205,6 +2544,52 @@ function draw() {
         
         ctx.restore();
 
+        // Draw Cupcake Rush countdown HUD if active
+        if (isBonusRound && bonusRoundTimer > 0) {
+            ctx.save();
+            const remainingSecs = (bonusRoundTimer / 60).toFixed(1);
+            const progress = bonusRoundTimer / BONUS_ROUND_DURATION;
+            
+            const pillW = Math.min(520, canvas.width - 40);
+            const pillH = 58;
+            const pillX = canvas.width / 2 - pillW / 2;
+            const pillY = 70;
+            
+            ctx.fillStyle = 'rgba(25, 8, 38, 0.90)';
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(pillX, pillY, pillW, pillH, 16);
+            else ctx.fillRect(pillX, pillY, pillW, pillH);
+            ctx.fill();
+            
+            const pulseGlow = 10 + Math.sin(Date.now() / 100) * 6;
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = pulseGlow;
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#ffd700';
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // Health rush progress bar
+            const barW = (pillW - 24) * progress;
+            const barGrad = ctx.createLinearGradient(pillX + 12, 0, pillX + pillW - 12, 0);
+            barGrad.addColorStop(0, '#ff477e');
+            barGrad.addColorStop(0.5, '#ffd166');
+            barGrad.addColorStop(1, '#06d6a0');
+            ctx.fillStyle = barGrad;
+            ctx.fillRect(pillX + 12, pillY + pillH - 10, barW, 6);
+
+            // Title and countdown text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px "Fredoka One", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`🧁 CUPCAKE RUSH: ${remainingSecs}s! GRAB FOR HP! 🧁`, canvas.width / 2, pillY + 28);
+            ctx.fillStyle = '#ffd166';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText(`Every cupcake adds +1 Heart for the 3 Kraken Bosses!`, canvas.width / 2, pillY + 44);
+            ctx.textAlign = 'left';
+            ctx.restore();
+        }
+
         // Draw level banner if active
         if (levelBannerTimer > 0) {
             const alpha = Math.min(1, levelBannerTimer / 30);
@@ -2430,6 +2815,11 @@ function triggerVictory() {
         if (nextLevelBtn) {
             nextLevelBtn.style.display = 'none';
         }
+        // Unlock Level Select in Main Menu permanently!
+        try {
+            localStorage.setItem('lizzyGameCompleted', 'true');
+        } catch (e) {}
+        checkLevelSelectUnlock();
     }
 
     // Fireworks effect on canvas
@@ -2447,6 +2837,18 @@ function triggerVictory() {
     }, 350);
 
     showOverlay('victoryOverlay');
+}
+
+// Level Select Unlocking & Choice Logic
+function checkLevelSelectUnlock() {
+    let isCompleted = false;
+    try {
+        isCompleted = localStorage.getItem('lizzyGameCompleted') === 'true';
+    } catch (e) {}
+    const selectBtn = document.getElementById('levelSelectBtn');
+    if (selectBtn) {
+        selectBtn.style.display = isCompleted ? 'block' : 'none';
+    }
 }
 
 // Canvas tap/click to advance cutscene
@@ -2477,8 +2879,65 @@ if (nextLevelBtnEl) {
 document.getElementById('startBtn').addEventListener('click', startGame);
 document.getElementById('instructionsBtn').addEventListener('click', () => showOverlay('instructionsOverlay'));
 document.getElementById('creditsBtn').addEventListener('click', () => showOverlay('creditsOverlay'));
-document.getElementById('backFromInstBtn').addEventListener('click', () => showOverlay('menuOverlay'));
-document.getElementById('backFromCreditsBtn').addEventListener('click', () => showOverlay('menuOverlay'));
+document.getElementById('backFromInstBtn').addEventListener('click', () => {
+    checkLevelSelectUnlock();
+    showOverlay('menuOverlay');
+});
+document.getElementById('backFromCreditsBtn').addEventListener('click', () => {
+    checkLevelSelectUnlock();
+    showOverlay('menuOverlay');
+});
+
+// Level Select button in main menu
+const levelSelectBtnEl = document.getElementById('levelSelectBtn');
+if (levelSelectBtnEl) {
+    levelSelectBtnEl.addEventListener('click', () => {
+        showOverlay('levelSelectOverlay');
+    });
+}
+
+const backFromLevelSelectBtnEl = document.getElementById('backFromLevelSelectBtn');
+if (backFromLevelSelectBtnEl) {
+    backFromLevelSelectBtnEl.addEventListener('click', () => {
+        checkLevelSelectUnlock();
+        showOverlay('menuOverlay');
+    });
+}
+
+// Level Choice Grid Buttons (Levels 1 to 6)
+document.querySelectorAll('.level-choice-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const lvl = parseInt(e.currentTarget.getAttribute('data-level'), 10);
+        if (!isNaN(lvl) && lvl >= 1 && lvl <= 6) {
+            if (victoryInterval) {
+                clearInterval(victoryInterval);
+                victoryInterval = null;
+            }
+            if (!bgmStarted) {
+                bgm.play().catch(e => console.log('Audio play prevented by browser'));
+                bgmStarted = true;
+            }
+            currentLevel = lvl;
+            score = 0;
+            giftsFound = 0;
+            player = null; // Fresh spawn
+            startTime = Date.now();
+            loadLevel(currentLevel);
+            gameState = 'PLAYING';
+            hideAllOverlays();
+            document.getElementById('hud').classList.remove('hidden');
+            const levelNames = [
+                "Level 1: Birthday Meadow 🌸",
+                "Level 2: Gift Valley 🎁",
+                "Level 3: Goblin Castle 🏰",
+                "Level 4: Cape Coast Beach 🏖️",
+                "Level 5: UCC Exam Halls 📚",
+                "Level 6: Grand Convocation 👑"
+            ];
+            showLevelBanner(levelNames[currentLevel - 1] || `Level ${currentLevel}`);
+        }
+    });
+});
 
 document.getElementById('pauseBtn').addEventListener('click', togglePause);
 document.getElementById('resumeBtn').addEventListener('click', togglePause);
@@ -2490,6 +2949,7 @@ document.getElementById('restartBtn').addEventListener('click', () => {
 document.getElementById('menuBtn').addEventListener('click', () => {
     gameState = 'MENU';
     document.getElementById('hud').classList.add('hidden');
+    checkLevelSelectUnlock();
     showOverlay('menuOverlay');
 });
 
@@ -2501,6 +2961,7 @@ document.getElementById('retryBtn').addEventListener('click', () => {
 document.getElementById('goMenuBtn').addEventListener('click', () => {
     gameState = 'MENU';
     document.getElementById('hud').classList.add('hidden');
+    checkLevelSelectUnlock();
     showOverlay('menuOverlay');
 });
 
@@ -2529,8 +2990,10 @@ document.getElementById('confirmNoBtn').addEventListener('click', () => {
 // Initialize Level 1 map & entities for menu background
 loadLevel(1);
 gameState = 'MENU';
+checkLevelSelectUnlock();
 const initialHud = document.getElementById('hud');
 if (initialHud) initialHud.classList.add('hidden');
 
 // Start loop
 gameLoop();
+
